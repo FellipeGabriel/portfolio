@@ -6,7 +6,7 @@ import ProjectLink from './ProjectLink.astro';
 import QrCode from './QrCode.astro';
 import speechWave from '../assets/photos/speech-wave.jpg';
 import lyfiaMap from '../assets/photos/lyfia-map.jpg';
-import hexdump from '../assets/projects/bintriage/hexdump.png';
+import bintriageMap from '../assets/photos/bintriage-map.jpg';
 import { ui, routes, publications, withBase, type Lang } from '../data/content';
 import { projects, nextSlug, type Slug } from '../data/projects';
 import { sectionIds } from '../data/sections';
@@ -21,7 +21,7 @@ const pubs = publications[lang].filter((x) => x.project === slug);
 const nextField = next.field;
 const nextArt = {
   lyfia: { src: lyfiaMap, position: '50% 6%' },
-  bintriage: { src: hexdump, position: '0% 0%' },
+  bintriage: { src: bintriageMap, position: '50% 60%' },
   recuperavc: { src: speechWave, position: '50% 50%' },
 }[next.slug];
 const nextImage = nextArt.src;
@@ -179,9 +179,30 @@ const title = `${p.name}: ${p.kind}. ${ui[lang].title.split(',')[0]}`;
     margin: 0;
     background: var(--paper);
   }
-  .plate-lyfia :global(img) {
-    width: 100%;
+  .plate-lyfia,
+  .plate-bintriage {
+    padding: clamp(2rem, 6vw, 5.5rem) var(--pad);
+  }
+  .plate-lyfia {
+    background: var(--lyfia-cream);
+  }
+  .plate-bintriage {
+    background: var(--petrol);
+  }
+  .plate-lyfia :global(picture),
+  .plate-bintriage :global(picture) {
+    display: block;
+  }
+  .plate-lyfia :global(img),
+  .plate-bintriage :global(img) {
+    display: block;
+    width: auto;
     height: auto;
+    max-width: min(100%, 64rem);
+    max-height: 70svh;
+    margin: 0 auto;
+    object-fit: contain;
+    border: var(--rule) solid var(--ink);
   }
   .plate-recuperavc {
     background: var(--recupera-green);
