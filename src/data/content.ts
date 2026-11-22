@@ -17,7 +17,7 @@ export const ui = {
     htmlLang: 'pt-BR',
     title: 'Fellipe Gabriel, desenvolvedor full stack',
     description:
-      'Portfólio de Fellipe Gabriel, desenvolvedor full stack. Node.js, React, TypeScript, PostgreSQL e Python. Projetos: Lyfia e RecuperAVC.',
+      'Portfólio de Fellipe Gabriel, desenvolvedor full stack. Node.js, React, TypeScript, PostgreSQL e Python. Projetos: Lyfia, bintriage e RecuperAVC.',
     skip: 'Pular para o conteúdo',
     nav: { projects: 'Projetos', work: 'Experiência', about: 'Sobre', contact: 'Contato', menu: 'Menu', close: 'Fechar', home: 'Início' },
     otherLang: { code: 'EN', label: 'Read in English' },
@@ -30,7 +30,7 @@ export const ui = {
     },
     projects: {
       heading: 'Projetos',
-      lead: 'Um painel público sobre o acesso à hemodiálise no SUS e um app Android de reabilitação pós-AVC publicado na Google Play.',
+      lead: 'Um painel público sobre o acesso à hemodiálise no SUS, uma ferramenta em C++ que examina executáveis sem rodá-los e um app Android de reabilitação pós-AVC publicado na Google Play.',
       howItWasMade: 'Como foi feito',
     },
     work: {
@@ -74,7 +74,7 @@ export const ui = {
     htmlLang: 'en',
     title: 'Fellipe Gabriel, full stack developer',
     description:
-      'Portfolio of Fellipe Gabriel, full stack developer. Node.js, React, TypeScript, PostgreSQL, and Python. Projects: Lyfia and RecuperAVC.',
+      'Portfolio of Fellipe Gabriel, full stack developer. Node.js, React, TypeScript, PostgreSQL, and Python. Projects: Lyfia, bintriage, and RecuperAVC.',
     skip: 'Skip to content',
     nav: { projects: 'Projects', work: 'Experience', about: 'About', contact: 'Contact', menu: 'Menu', close: 'Close', home: 'Home' },
     otherLang: { code: 'PT', label: 'Ler em português' },
@@ -87,7 +87,7 @@ export const ui = {
     },
     projects: {
       heading: 'Projects',
-      lead: "A public dashboard on access to hemodialysis in Brazil's public health system and a post-stroke rehabilitation app on Google Play.",
+      lead: "A public dashboard on access to hemodialysis in Brazil's public health system, a C++ tool that inspects executables without running them, and a post-stroke rehabilitation app on Google Play.",
       howItWasMade: 'How it was built',
     },
     work: {
@@ -164,7 +164,11 @@ export const work: Record<Lang, { jobs: Job[]; education: Job[] }> = {
         period: 'out. 2022 – dez. 2026 (previsão)',
         lead: 'Pesquisa em saúde digital, que resultou no Lyfia e no RecuperAVC.',
         items: [
-          'Projetos de disciplina com Docker Compose, como microsserviços em Spring Boot com gateway em Node.js.',
+          'No MioDottore, sistema hospitalar com microsserviços em Spring Boot e gateway em Node.js, fiz parte do back-end, a integração dos containers no Docker Compose e o envio de e-mail.',
+          'Em DevOps, montei no GitHub Actions o pipeline de um app Expo: testes em matriz de versões do Node, deploy da versão web no GitHub Pages, APK publicado como release e imagem Docker multiarquitetura no Docker Hub.',
+          'Desenvolvi com colegas um sistema de gestão de frotas em Angular 19, com back-end em Spring Boot e Spring Security.',
+          'Modelei um data warehouse de varejo em PostgreSQL, com esquema estrela de cinco dimensões, staging e ETL escrito em SQL.',
+          'Analisei em R, com igraph, a robustez e a hierarquia de redes de interação entre proteínas, com decomposição em K-core e simulação de ataques direcionados e falhas aleatórias.',
         ],
       },
     ],
@@ -195,7 +199,11 @@ export const work: Record<Lang, { jobs: Job[]; education: Job[] }> = {
         period: 'Oct 2022 – Dec 2026 (expected)',
         lead: 'Digital health research that led to Lyfia and RecuperAVC.',
         items: [
-          'Course projects with Docker Compose, such as Spring Boot microservices behind a Node.js gateway.',
+          'On MioDottore, a hospital management system built as Spring Boot microservices behind a Node.js gateway, I worked on the backend, wired the containers together with Docker Compose, and built the email delivery.',
+          'For a DevOps course, I built the GitHub Actions pipeline for an Expo app: tests across a Node version matrix, the web build deployed to GitHub Pages, the APK published as a release, and a multi-architecture Docker image pushed to Docker Hub.',
+          'Built a fleet management system with classmates in Angular 19, with a Spring Boot and Spring Security backend.',
+          'Designed a retail data warehouse in PostgreSQL with a five-dimension star schema, a staging layer, and ETL written in SQL.',
+          'Analyzed robustness and hierarchy in protein interaction networks in R with igraph, using K-core decomposition and simulated targeted attacks and random failures.',
         ],
       },
     ],
@@ -266,18 +274,20 @@ export const publications: Record<Lang, Publication[]> = {
 
 export const stack: Record<Lang, { group: string; items: string }[]> = {
   pt: [
-    { group: 'Linguagens', items: 'TypeScript, JavaScript, Python, SQL, R, Kotlin' },
+    { group: 'Linguagens', items: 'TypeScript, JavaScript, Python, SQL, R, Kotlin, C++' },
     { group: 'Back-end', items: 'Node.js, Fastify, Express, PostgreSQL, Redis, Drizzle ORM, Zod' },
     { group: 'Front-end', items: 'React, Vite, Tailwind CSS, ECharts, Canvas 2D' },
     { group: 'Mobile', items: 'Android, Jetpack Compose, Room, JNI e NDK' },
+    { group: 'C++ e análise binária', items: 'CMake, vcpkg, LIEF, Capstone, ASan e UBSan' },
     { group: 'Dados', items: 'targets, renv, SQLite, ETL, estatística espacial' },
     { group: 'Infra e qualidade', items: 'Docker, GitHub Actions, Vitest, Playwright, OWASP' },
   ],
   en: [
-    { group: 'Languages', items: 'TypeScript, JavaScript, Python, SQL, R, Kotlin' },
+    { group: 'Languages', items: 'TypeScript, JavaScript, Python, SQL, R, Kotlin, C++' },
     { group: 'Backend', items: 'Node.js, Fastify, Express, PostgreSQL, Redis, Drizzle ORM, Zod' },
     { group: 'Frontend', items: 'React, Vite, Tailwind CSS, ECharts, Canvas 2D' },
     { group: 'Mobile', items: 'Android, Jetpack Compose, Room, JNI and NDK' },
+    { group: 'C++ and binary analysis', items: 'CMake, vcpkg, LIEF, Capstone, ASan, and UBSan' },
     { group: 'Data', items: 'targets, renv, SQLite, ETL, spatial statistics' },
     { group: 'Infrastructure and quality', items: 'Docker, GitHub Actions, Vitest, Playwright, OWASP' },
   ],

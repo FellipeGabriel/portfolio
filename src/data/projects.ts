@@ -9,8 +9,10 @@ import recHome from '../assets/projects/recuperavc/home.png';
 import recFala from '../assets/projects/recuperavc/fala.jpg';
 import recPreferencias from '../assets/projects/recuperavc/preferencias.jpg';
 import recRelatorio from '../assets/projects/recuperavc/relatorio.jpg';
+import btReport from '../assets/projects/bintriage/report.png';
+import btGraph from '../assets/projects/bintriage/callgraph.png';
 
-export type Slug = 'lyfia' | 'recuperavc';
+export type Slug = 'lyfia' | 'bintriage' | 'recuperavc';
 
 type Link = { label: string; href: string; kind: 'web' | 'play' | 'github' };
 type Shot = { src: ImageMetadata; alt: string; caption?: string };
@@ -19,7 +21,7 @@ type Section = { heading: string; body: string[]; shot?: Shot };
 export type Project = {
   slug: Slug;
   name: string;
-  field: 'petrol' | 'ink';
+  field: 'petrol' | 'ink' | 'paper';
   kind: string;
   lead: string;
   facts: string[];
@@ -34,6 +36,11 @@ export type Project = {
 const lyfiaLinks: Record<Lang, Link[]> = {
   pt: [{ label: 'Abrir o painel', href: 'https://lyfia.pages.dev', kind: 'web' }],
   en: [{ label: 'Open the dashboard', href: 'https://lyfia.pages.dev', kind: 'web' }],
+};
+
+const btLinks: Record<Lang, Link[]> = {
+  pt: [{ label: 'Código no GitHub', href: 'https://github.com/FellipeGabriel/bintriage', kind: 'github' }],
+  en: [{ label: 'Code on GitHub', href: 'https://github.com/FellipeGabriel/bintriage', kind: 'github' }],
 };
 
 const recLinks: Record<Lang, Link[]> = {
@@ -103,6 +110,63 @@ export const projects: Record<Lang, Project[]> = {
             'O painel é em React 19 e TypeScript. Comecei com o MapLibre e troquei por um renderizador próprio em Canvas 2D: o JavaScript inicial caiu de 369 KB para 95 KB (gzip) e o zoom roda a 60 fps sem GPU.',
             'As tabelas são virtualizadas com TanStack e o estado fica na URL com Zustand, então dá para mandar o link de uma visão específica. Os testes e2e com Playwright e axe checam acessibilidade, inclusive com simulação de daltonismo.',
             'O recálculo do índice no navegador bate com o do R, com erro máximo de 10⁻⁷. O site está no Cloudflare Pages, com CSP e conferência de SHA-256 dos arquivos.',
+          ],
+        },
+      ],
+    },
+    {
+      slug: 'bintriage',
+      name: 'bintriage',
+      field: 'paper',
+      kind: 'Ferramenta em C++, projeto pessoal, 2026',
+      lead: 'Lê um executável do Windows ou do Linux sem rodá-lo e mostra o que ele importa, que proteções de segurança tem, onde ficam as funções e quem chama quem.',
+      facts: [
+        'C++20 com LIEF e Capstone, para binários PE e ELF x86_64',
+        'Sem metadados, a descoberta de funções tem F1 de 0,80 em 39 binários reais; a primeira versão tinha 0,06',
+        'Testado com ASan, UBSan e 269 entradas corrompidas de propósito',
+      ],
+      links: btLinks.pt,
+      cover: { src: btReport, alt: 'Saída do bintriage no terminal para o /bin/ls: formato, ponto de entrada, proteções de segurança, seções com entropia e as primeiras funções encontradas.' },
+      secondary: [
+        { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, partindo do ponto de entrada até as funções importadas da libc.' },
+      ],
+      meta: [
+        { label: 'Ano', value: '2026' },
+        { label: 'Tipo', value: 'Projeto pessoal' },
+        { label: 'Formatos', value: 'PE e ELF, x86_64' },
+        { label: 'Stack', value: 'C++20, CMake, vcpkg, LIEF, Capstone, Python' },
+        { label: 'Código', value: 'github.com/FellipeGabriel/bintriage' },
+      ],
+      sections: [
+        {
+          heading: 'O problema',
+          body: [
+            'Diante de um executável desconhecido, a primeira pergunta é o que ele faz e se vale gastar horas com ele num disassembler. O bintriage responde isso em menos de um segundo na maioria dos binários, direto no terminal.',
+            'Ele trata o arquivo como dado não confiável: confere cabeçalhos e limites antes de cada leitura e nunca carrega, mapeia ou executa o binário.',
+          ],
+        },
+        {
+          heading: 'Como acha as funções',
+          body: [
+            'A primeira versão seguia as chamadas a partir do ponto de entrada e parava no primeiro ret de cada função, então encontrava menos de 3% das funções. Hoje cada função vira um grafo de blocos básicos: a análise segue os desvios condicionais, resolve as tabelas de salto dos switch e separa chamadas finais (tail calls) de saltos dentro da própria função.',
+            'Quando o binário traz metadados, eles viram pontos de partida: a tabela de exceções .pdata no Windows, o .eh_frame e as tabelas de símbolos no Linux, além de exports e callbacks TLS. O que sobra é coberto por uma busca de prólogos de função, confirmada decodificando as primeiras instruções.',
+          ],
+          shot: { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, com funções internas, chamadas resolvidas e funções da libc.', caption: 'O grafo de chamadas parte do ponto de entrada; endereços são funções do próprio binário e nomes seguidos de uma biblioteca entre colchetes são funções importadas.' },
+        },
+        {
+          heading: 'O que mais ele mostra',
+          body: [
+            'As proteções de segurança do binário, no estilo do checksec: PIE, NX, RELRO, canário de pilha e FORTIFY no Linux; ASLR, DEP, CFG, /GS e assinatura Authenticode no Windows.',
+            'A entropia de cada seção e alertas de anomalia, como seção gravável e executável ao mesmo tempo, que costuma indicar código empacotado. E pistas do que o programa pode fazer a partir dos imports, como rede, criptografia e injeção em outros processos, apresentadas como pistas e não como veredito.',
+            'O relatório sai no terminal, em JSON e em DOT, para desenhar o grafo no Graphviz.',
+          ],
+          shot: { src: btReport, alt: 'Relatório do bintriage para o /bin/ls com proteções de segurança, seções e entropia.', caption: 'O começo do relatório: formato, proteções de segurança e entropia por seção.' },
+        },
+        {
+          heading: 'Como sei que funciona',
+          body: [
+            'Medi a descoberta de funções em 39 binários reais, de ferramentas do Linux a DLLs do System32, com 30.210 funções de referência tiradas das tabelas de símbolos, do .eh_frame e do .pdata. Sem usar nenhum metadado, o F1 subiu de 0,06 na primeira versão para 0,80. O script que refaz essa conta está no repositório.',
+            'Os testes rodam com AddressSanitizer e UndefinedBehaviorSanitizer e incluem 269 entradas malformadas ou corrompidas de propósito; nenhum derruba nem trava a análise. O notepad.exe é analisado em cerca de 55 ms, contra 1,3 s da primeira versão.',
           ],
         },
       ],
@@ -232,6 +296,63 @@ export const projects: Record<Lang, Project[]> = {
       ],
     },
     {
+      slug: 'bintriage',
+      name: 'bintriage',
+      field: 'paper',
+      kind: 'C++ tool, personal project, 2026',
+      lead: 'Reads a Windows or Linux executable without running it and shows what it imports, which security hardening it has, where its functions are, and what calls what.',
+      facts: [
+        'C++20 with LIEF and Capstone, for x86_64 PE and ELF binaries',
+        'Without metadata, function discovery reaches 0.80 F1 across 39 real binaries, up from 0.06 in the first version',
+        'Tested under ASan, UBSan, and 269 deliberately corrupted inputs',
+      ],
+      links: btLinks.en,
+      cover: { src: btReport, alt: 'bintriage terminal output for /bin/ls: format, entry point, binary hardening, sections with entropy, and the first functions found.' },
+      secondary: [
+        { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, from the entry point down to functions imported from libc.' },
+      ],
+      meta: [
+        { label: 'Year', value: '2026' },
+        { label: 'Type', value: 'Personal project' },
+        { label: 'Formats', value: 'PE and ELF, x86_64' },
+        { label: 'Stack', value: 'C++20, CMake, vcpkg, LIEF, Capstone, Python' },
+        { label: 'Code', value: 'github.com/FellipeGabriel/bintriage' },
+      ],
+      sections: [
+        {
+          heading: 'The problem',
+          body: [
+            'Faced with an unknown executable, the first question is what it does and whether it deserves hours in a disassembler. bintriage answers that in under a second for most binaries, right in the terminal.',
+            'It treats the file as untrusted data: headers and bounds are checked before every read, and the binary is never loaded, mapped, or executed.',
+          ],
+        },
+        {
+          heading: 'Finding functions',
+          body: [
+            'The first version followed calls from the entry point and stopped at the first ret in each function, so it found fewer than 3% of the functions. Now each function becomes a graph of basic blocks: the analysis follows conditional branches, resolves switch jump tables, and tells tail calls apart from jumps inside the same function.',
+            'When the binary carries metadata, it becomes a starting point: the .pdata exception table on Windows, .eh_frame and the symbol tables on Linux, plus exports and TLS callbacks. Whatever is left is covered by a scan for function prologues, confirmed by decoding the first instructions.',
+          ],
+          shot: { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, with internal functions, resolved calls, and libc functions.', caption: 'The call graph starts at the entry point; addresses are functions inside the binary and names followed by a bracketed library are imported functions.' },
+        },
+        {
+          heading: 'What else it reports',
+          body: [
+            'Binary hardening checks in the style of checksec: PIE, NX, RELRO, stack canaries, and FORTIFY on Linux; ASLR, DEP, CFG, /GS, and Authenticode signatures on Windows.',
+            'Per-section entropy and anomaly flags, such as sections that are both writable and executable, a common sign of packed code. And hints about what the program can do based on its imports, such as networking, cryptography, and injecting into other processes, presented as hints rather than verdicts.',
+            'The report comes out in the terminal, as JSON, and as DOT for drawing the graph with Graphviz.',
+          ],
+          shot: { src: btReport, alt: 'bintriage report for /bin/ls with binary hardening, sections, and entropy.', caption: 'The top of the report: format, binary hardening, and per-section entropy.' },
+        },
+        {
+          heading: 'How I know it works',
+          body: [
+            'I measured function discovery on 39 real binaries, from Linux tools to System32 DLLs, against 30,210 reference functions taken from symbol tables, .eh_frame, and .pdata. With all metadata turned off, F1 went from 0.06 in the first version to 0.80. The script that reruns the numbers is in the repository.',
+            'The tests run under AddressSanitizer and UndefinedBehaviorSanitizer and include 269 malformed or deliberately corrupted inputs; none of them crashes or hangs the analysis. notepad.exe takes about 55 ms to analyze, down from 1.3 s in the first version.',
+          ],
+        },
+      ],
+    },
+    {
       slug: 'recuperavc',
       name: 'RecuperAVC',
       field: 'ink',
@@ -298,4 +419,7 @@ export const projects: Record<Lang, Project[]> = {
   ],
 };
 
-export const otherSlug = (slug: Slug): Slug => (slug === 'lyfia' ? 'recuperavc' : 'lyfia');
+export const nextSlug = (slug: Slug): Slug => {
+  const order = projects.pt.map((x) => x.slug);
+  return order[(order.indexOf(slug) + 1) % order.length];
+};

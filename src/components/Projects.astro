@@ -59,6 +59,14 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
                 <Picture quality={88} src={p.secondary[0].src} formats={['avif', 'webp']} widths={[300, 520, 800]} sizes="(max-width: 899px) 22vw, 13vw" alt={p.secondary[0].alt} loading="lazy" />
               </figure>
             </div>
+          ) : p.slug === 'bintriage' ? (
+            <div class="stage stage-terminal">
+              {[p.secondary[0], p.cover].map((s, i) => (
+                <figure class={`screen term ${i === 0 ? 'term-back' : 'term-front'}`} data-shot>
+                  <Picture quality={90} src={s.src} formats={['avif', 'webp']} widths={[700, 1100, 1800]} sizes="(max-width: 899px) 86vw, 40vw" alt={s.alt} loading="lazy" />
+                </figure>
+              ))}
+            </div>
           ) : (
             <div class="stage stage-phones">
               {[p.cover, ...p.secondary].map((s) => (
@@ -190,6 +198,10 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
     --ghost: var(--ink);
     --plate-bg: var(--recupera-green);
   }
+  .field-paper {
+    --ghost: var(--amber);
+    --plate-bg: var(--petrol);
+  }
   .project-title,
   .project-ghost {
     font-variation-settings: 'wdth' var(--title-wdth, 62);
@@ -278,6 +290,27 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
   }
   .stage-phones {
     gap: clamp(0.6rem, 4cqw, 2.5rem);
+  }
+  .stage-terminal {
+    display: grid;
+  }
+  .term {
+    grid-area: 1 / 1;
+    width: 84%;
+    height: auto;
+    border: var(--rule) solid var(--ink);
+  }
+  .term :global(img) {
+    height: auto;
+  }
+  .term-back {
+    justify-self: start;
+    align-self: start;
+  }
+  .term-front {
+    justify-self: end;
+    align-self: start;
+    margin-top: 22%;
   }
   .phone {
     width: 30%;
@@ -387,6 +420,24 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
       height: var(--ph);
       width: calc(var(--ph) * 0.47);
       border-width: 5px;
+    }
+    .stage-terminal {
+      --term-ratio: 1.28;
+      --tw: min(82cqw, 100cqh * 0.8 * var(--term-ratio));
+      display: block;
+    }
+    .term {
+      position: absolute;
+      width: var(--tw);
+      margin: 0;
+    }
+    .term-back {
+      left: calc(clamp(1rem, 3vw, 3.5rem) + (100cqw - var(--tw) * 1.18) / 2);
+      top: clamp(1rem, 4svh, 2.5rem);
+    }
+    .term-front {
+      right: calc(clamp(1rem, 3vw, 3.5rem) + (100cqw - var(--tw) * 1.18) / 2);
+      bottom: clamp(1rem, 4svh, 2.5rem);
     }
     .project-body {
       position: absolute;

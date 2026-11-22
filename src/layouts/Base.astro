@@ -69,7 +69,7 @@ const pageDescription = description ?? t.description;
         } catch (e) {}
         if (motion && pt && pt.name && !first) {
           d.classList.add('is-transitioning');
-          d.dataset.ptField = pt.field === 'ink' ? 'ink' : 'petrol';
+          d.dataset.ptField = pt.field === 'ink' || pt.field === 'paper' ? pt.field : 'petrol';
           d.style.setProperty('--pt-name', JSON.stringify(String(pt.name)));
           d.style.setProperty('--pt-size', Math.round(Math.min(innerWidth * 0.22, (innerWidth * 0.9) / (String(pt.name).length * 0.5))) + 'px');
           setTimeout(function () { d.classList.remove('is-transitioning'); }, 6000);

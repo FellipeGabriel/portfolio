@@ -25,6 +25,11 @@ const columns = Array.from({ length: 12 });
     --pt-bg: var(--ink);
     --pt-fg: var(--amber);
   }
+  .pt[data-field='paper'],
+  :global(html[data-pt-field='paper']) .pt {
+    --pt-bg: var(--paper);
+    --pt-fg: var(--ink);
+  }
   .pt[data-field='petrol'],
   :global(html[data-pt-field='petrol']) .pt {
     --pt-bg: var(--petrol);

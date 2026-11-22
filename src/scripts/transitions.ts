@@ -1,6 +1,6 @@
 import gsap from 'gsap';
 
-type Stop = { field: 'petrol' | 'ink'; name: string };
+type Stop = { field: 'petrol' | 'ink' | 'paper'; name: string };
 
 const KEY = 'fg-pt';
 
@@ -9,6 +9,7 @@ const nameSize = (name: string) => `${Math.round(Math.min(window.innerWidth * 0.
 function destination(url: URL): Stop {
   if (/\/(projetos|projects)\/lyfia\/?$/.test(url.pathname)) return { field: 'petrol', name: 'Lyfia' };
   if (/\/(projetos|projects)\/recuperavc\/?$/.test(url.pathname)) return { field: 'ink', name: 'RecuperAVC' };
+  if (/\/(projetos|projects)\/bintriage\/?$/.test(url.pathname)) return { field: 'paper', name: 'bintriage' };
   return { field: 'petrol', name: 'Fellipe Gabriel' };
 }
 

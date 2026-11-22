@@ -6,8 +6,9 @@ import ProjectLink from './ProjectLink.astro';
 import QrCode from './QrCode.astro';
 import speechWave from '../assets/photos/speech-wave.jpg';
 import lyfiaMap from '../assets/photos/lyfia-map.jpg';
+import hexdump from '../assets/projects/bintriage/hexdump.png';
 import { ui, routes, publications, withBase, type Lang } from '../data/content';
-import { projects, otherSlug, type Slug } from '../data/projects';
+import { projects, nextSlug, type Slug } from '../data/projects';
 import { sectionIds } from '../data/sections';
 
 interface Props { lang: Lang; slug: Slug }
@@ -15,11 +16,16 @@ const { lang, slug } = Astro.props;
 const other: Lang = lang === 'pt' ? 'en' : 'pt';
 const t = ui[lang].caseStudy;
 const p = projects[lang].find((x) => x.slug === slug)!;
-const next = projects[lang].find((x) => x.slug === otherSlug(slug))!;
+const next = projects[lang].find((x) => x.slug === nextSlug(slug))!;
 const pubs = publications[lang].filter((x) => x.project === slug);
 const nextField = next.field;
-const nextImage = slug === 'lyfia' ? speechWave : lyfiaMap;
-const nextPosition = slug === 'lyfia' ? '50% 50%' : '50% 6%';
+const nextArt = {
+  lyfia: { src: lyfiaMap, position: '50% 6%' },
+  bintriage: { src: hexdump, position: '0% 0%' },
+  recuperavc: { src: speechWave, position: '50% 50%' },
+}[next.slug];
+const nextImage = nextArt.src;
+const nextPosition = nextArt.position;
 const title = `${p.name}: ${p.kind}. ${ui[lang].title.split(',')[0]}`;
 ---
 <Base
@@ -54,7 +60,7 @@ const title = `${p.name}: ${p.kind}. ${ui[lang].title.split(',')[0]}`;
     </header>
 
     <div class={`case-plate plate plate-${p.slug}`} style={`view-transition-name: plate-${p.slug}`} data-case-plate>
-      {p.slug === 'lyfia' ? (
+      {p.slug !== 'recuperavc' ? (
         <Picture quality={88} src={p.cover.src} formats={['avif', 'webp']} widths={[800, 1400, 2200]} sizes="100vw" alt={p.cover.alt} loading="eager" fetchpriority="high" />
       ) : (
         <div class="case-phones">
