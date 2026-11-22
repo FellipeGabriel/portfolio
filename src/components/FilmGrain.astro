@@ -1,0 +1,60 @@
+<div class="film-grain" aria-hidden="true"></div>
+
+<style is:global>
+  .film-grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 150;
+    opacity: var(--grain-opacity, 0.07);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeColorMatrix values='3 0 0 0 -1 0 3 0 0 -1 0 0 3 0 -1 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 1s steps(8) infinite;
+    will-change: transform;
+    transition: opacity 0.4s var(--ease-out);
+  }
+  html[data-top-field='paper']:not([data-nav-field]),
+  html[data-nav-field='paper'] { --grain-opacity: 0.26; }
+  html[data-top-field='ink']:not([data-nav-field]),
+  html[data-nav-field='ink'] { --grain-opacity: 0.22; }
+  html[data-top-field='petrol']:not([data-nav-field]),
+  html[data-nav-field='petrol'] { --grain-opacity: 0.1; }
+  html[data-top-field='amber']:not([data-nav-field]),
+  html[data-nav-field='amber'] { --grain-opacity: 0.07; }
+  .nf { --grain-opacity: 0.07; }
+
+  @keyframes grain {
+    0% { transform: translate(0, 0) }
+    12% { transform: translate(-5%, -8%) }
+    25% { transform: translate(-12%, 4%) }
+    37% { transform: translate(7%, -12%) }
+    50% { transform: translate(-3%, 12%) }
+    62% { transform: translate(-12%, -2%) }
+    75% { transform: translate(10%, 6%) }
+    87% { transform: translate(3%, -4%) }
+    100% { transform: translate(0, 0) }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .film-grain { animation: none; }
+  }
+  @media print {
+    .film-grain { display: none; }
+  }
+
+  .projector {
+    animation: projector 0.5s steps(1) infinite;
+  }
+  @keyframes projector {
+    0% { opacity: 1 }
+    20% { opacity: 0.975 }
+    40% { opacity: 1 }
+    55% { opacity: 0.985 }
+    75% { opacity: 0.97 }
+    90% { opacity: 1 }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .projector { animation: none; }
+  }
+</style>

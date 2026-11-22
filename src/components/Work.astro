@@ -1,0 +1,105 @@
+---
+import { ui, work, type Lang, type Job } from '../data/content';
+import { sectionIds } from '../data/sections';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].work;
+const { jobs, education } = work[lang];
+const groups: { title: string; items: Job[] }[] = [
+  { title: t.heading, items: jobs },
+  { title: t.education, items: education },
+];
+---
+<section id={sectionIds[lang].work} class="work field-paper" data-field="paper" aria-labelledby="work-title">
+  <h2 id="work-title" class="display work-title" data-fit data-split>{t.heading}</h2>
+  {groups.map((g, gi) => (
+    <div class="group">
+      <h3 class={gi > 0 ? "label group-title" : "visually-hidden"}>{g.title}</h3>
+      {g.items.map((j) => (
+        <article class="job">
+          <p class="label tnum job-period">{j.period}</p>
+          <div class="job-head">
+            <h4 class="job-role">{j.role}</h4>
+            <p class="job-org">{j.org}</p>
+            <p class="job-lead">{j.lead}</p>
+          </div>
+          <ul class="job-items">
+            {j.items.map((i) => <li>{i}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  ))}
+</section>
+
+<style>
+  .work {
+    padding: clamp(5rem, 14svh, 10rem) var(--pad) clamp(4rem, 10svh, 8rem);
+  }
+  .work-title {
+    font-size: clamp(3rem, 12vw, 15rem);
+    margin-bottom: clamp(2rem, 6svh, 4.5rem);
+  }
+  .group + .group {
+    margin-top: clamp(3rem, 8svh, 6rem);
+  }
+  .group-title {
+    border-bottom: var(--rule) solid var(--ink);
+    padding-bottom: 0.5rem;
+  }
+  .job {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    border-top: var(--rule) solid var(--ink);
+    padding-top: 1.25rem;
+  }
+  .group-title + .job {
+    border-top: 0;
+  }
+  .job-period {
+    grid-column: 1 / span 3;
+  }
+  .job-head {
+    grid-column: 4 / span 4;
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+  .job-role {
+    font-size: var(--step-2);
+    font-weight: 800;
+    line-height: 1.05;
+    font-variation-settings: 'wdth' 88;
+    letter-spacing: -0.01em;
+  }
+  .job-org {
+    font-weight: 650;
+  }
+  .job-lead {
+    margin-top: 0.5rem;
+    max-width: 40ch;
+  }
+  .job-items {
+    grid-column: 8 / span 5;
+  }
+  .job-items li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    line-height: 1.4;
+  }
+  .job-items li:first-child {
+    padding-top: 0;
+  }
+  @media (max-width: 899px) {
+    .job-period,
+    .job-head,
+    .job-items {
+      grid-column: 1 / -1;
+    }
+    .job-items {
+      margin-top: 0.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,9 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+import type { Slug } from '../../../data/projects';
+export function getStaticPaths() {
+  return [{ params: { slug: 'lyfia' } }, { params: { slug: 'recuperavc' } }];
+}
+const { slug } = Astro.params as { slug: Slug };
+---
+<CaseStudy lang="en" slug={slug} />

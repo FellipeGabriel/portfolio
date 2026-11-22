@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Projects from './Projects.astro';
+import Work from './Work.astro';
+import Publications from './Publications.astro';
+import About from './About.astro';
+import Contact from './Contact.astro';
+import Tear from './Tear.astro';
+import bokehColor from '../assets/photos/bokeh-color.jpg';
+import fogLamps from '../assets/photos/fog-lamps.jpg';
+import { routes, type Lang } from '../data/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const other: Lang = lang === 'pt' ? 'en' : 'pt';
+---
+<Base lang={lang} page="home" path={routes[lang].home} altPath={routes[other].home}>
+  <Hero lang={lang} />
+  <Projects lang={lang} />
+  <Tear image={bokehColor} from="ink" to="paper" variant={1} position="50% 50%" />
+  <Work lang={lang} />
+  <Publications lang={lang} />
+  <About lang={lang} />
+  <Tear image={fogLamps} from="paper" to="amber" variant={2} position="50% 42%" />
+  <Contact lang={lang} />
+</Base>

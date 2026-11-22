@@ -1,0 +1,199 @@
+---
+import Icon from './Icon.astro';
+import { ui, routes, type Lang } from '../data/content';
+import { sectionIds } from '../data/sections';
+
+interface Props {
+  lang: Lang;
+  altPath: string;
+  page: 'home' | 'project';
+  projectName?: string;
+}
+const { lang, altPath, page, projectName } = Astro.props;
+const t = ui[lang];
+const ids = sectionIds[lang];
+const home = routes[lang].home;
+const prefix = page === 'home' ? '' : home;
+const other: Lang = lang === 'pt' ? 'en' : 'pt';
+const links = [
+  { key: 'projects', label: t.nav.projects, href: `${prefix}#${ids.projects}` },
+  { key: 'work', label: t.nav.work, href: `${prefix}#${ids.work}` },
+  { key: 'about', label: t.nav.about, href: `${prefix}#${ids.about}` },
+  { key: 'contact', label: t.nav.contact, href: `${prefix}#${ids.contact}` },
+];
+---
+<header class="nav" data-nav>
+  <div class="nav-bar">
+    <p class="nav-home">
+      <a href={home}>Fellipe Gabriel</a>
+      {projectName && (
+        <>
+          <span aria-hidden="true">/</span>
+          <a href={`${home}#${ids.projects}`}>{t.nav.projects}</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{projectName}</span>
+        </>
+      )}
+    </p>
+    <nav class="nav-links" aria-label={lang === 'pt' ? 'Principal' : 'Main'}>
+      <ul>
+        {links.map((l) => (
+          <li><a href={l.href} data-nav-link={l.key}>{l.label}</a></li>
+        ))}
+        <li>
+          <a href={altPath} hreflang={ui[other].htmlLang} lang={ui[other].htmlLang} data-lang-switch={other} aria-label={t.otherLang.label}>{t.otherLang.code}</a>
+        </li>
+      </ul>
+    </nav>
+    <button class="nav-menu-btn" type="button" aria-haspopup="dialog" data-menu-open>
+      {t.nav.menu}<Icon name="menu" />
+    </button>
+  </div>
+
+  <dialog class="menu field-amber" aria-label={t.nav.menu} data-menu>
+    <div class="menu-top">
+      <a href={home} class="menu-name">Fellipe Gabriel</a>
+      <button type="button" class="nav-menu-btn is-close" data-menu-close>{t.nav.close}<Icon name="close" /></button>
+    </div>
+    <ul class="menu-list">
+      {links.map((l) => (
+        <li><a class="display-2" href={l.href} data-menu-link>{l.label}</a></li>
+      ))}
+    </ul>
+    <a class="menu-lang btn" href={altPath} hreflang={ui[other].htmlLang} lang={ui[other].htmlLang} data-lang-switch={other}>{t.otherLang.label}</a>
+  </dialog>
+</header>
+
+<style>
+  .nav {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 40;
+    color: var(--nav-fg, var(--ink));
+    transition: color 0.4s var(--ease-out);
+  }
+  :global(html.nav-fixed) .nav {
+    position: fixed;
+  }
+  :global(html.nav-fixed) .nav-bar {
+    background: var(--nav-bg, transparent);
+    transition: background-color 0.4s var(--ease-out), transform 0.5s var(--ease-out);
+  }
+  .nav-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--gutter);
+    padding: calc(var(--pad) * 0.6) var(--pad);
+    font-size: var(--step--1);
+    font-weight: 650;
+    font-variation-settings: 'wdth' 112;
+    letter-spacing: 0.02em;
+  }
+  .nav-home {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: baseline;
+  }
+  .nav a {
+    text-decoration: none;
+  }
+  .nav-home a:first-child {
+    font-weight: 800;
+  }
+  .nav-links ul {
+    display: flex;
+    gap: clamp(1rem, 2.2vw, 2.5rem);
+  }
+  .nav-links a,
+  .nav-home a {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% var(--rule);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+    transition: background-size 0.4s var(--ease-out), letter-spacing 0.4s var(--ease-out);
+  }
+  .nav-links a:hover,
+  .nav-home a:hover {
+    background-size: 100% var(--rule);
+  }
+  .nav-links a[aria-current='true'] {
+    font-weight: 850;
+    background-size: 100% 4px;
+  }
+  .nav-links a:hover {
+    letter-spacing: 0.06em;
+  }
+  .nav-menu-btn {
+    display: none;
+    align-items: center;
+    gap: 0.5em;
+    border: 0;
+    background: none;
+    padding: 0.5rem 0;
+    min-height: 44px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .nav-menu-btn :global(.icon) {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  .menu {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    padding: calc(var(--pad) * 0.6) var(--pad) var(--pad);
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .menu[open] {
+    display: flex;
+  }
+  .menu::backdrop {
+    background: var(--amber);
+  }
+  .menu-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--step--1);
+    font-weight: 800;
+    font-variation-settings: 'wdth' 112;
+  }
+  .menu-top .nav-menu-btn {
+    display: inline-flex;
+    font-size: var(--step--1);
+    font-variation-settings: 'wdth' 112;
+  }
+  .menu-list {
+    display: grid;
+    gap: 0.15em;
+  }
+  .menu-list a {
+    text-decoration: none;
+    display: block;
+    font-size: clamp(3.5rem, 18vw, 7rem);
+  }
+  .menu-lang {
+    align-self: flex-start;
+  }
+
+  @media (max-width: 760px) {
+    .nav-links {
+      display: none;
+    }
+    .nav-menu-btn {
+      display: inline-flex;
+    }
+    .nav-home > :not(:first-child) {
+      display: none;
+    }
+  }
+</style>

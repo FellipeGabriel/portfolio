@@ -1,0 +1,95 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Loader from '../components/Loader.astro';
+import PageTransition from '../components/PageTransition.astro';
+import FilmGrain from '../components/FilmGrain.astro';
+import { ui, withBase, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  altPath: string;
+  path: string;
+  page: 'home' | 'project';
+  projectName?: string;
+  topField?: 'amber' | 'ink' | 'paper' | 'petrol';
+}
+
+const { lang, title, description, altPath, path, page, projectName, topField = 'amber' } = Astro.props;
+const t = ui[lang];
+const other: Lang = lang === 'pt' ? 'en' : 'pt';
+const site = Astro.site!;
+const canonical = new URL(path, site).href;
+const ogImage = new URL(withBase(`/og-${lang}.png`), site).href;
+const pageTitle = title ?? t.title;
+const pageDescription = description ?? t.description;
+---
+<!doctype html>
+<html lang={t.htmlLang} data-top-field={topField}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={ui[lang].htmlLang} href={canonical} />
+    <link rel="alternate" hreflang={ui[other].htmlLang} href={new URL(altPath, site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(withBase('/'), site).href} />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <meta name="theme-color" content="#272c3b" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={lang === 'pt' ? 'pt_BR' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        var motion = false;
+        try {
+          motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {}
+        if (motion) d.classList.add('motion');
+        var first = false;
+        try {
+          first = !sessionStorage.getItem('fg-loaded');
+        } catch (e) {}
+        if (motion && first) {
+          d.classList.add('is-loading');
+          setTimeout(function () { d.classList.remove('is-loading'); }, 7000);
+        }
+        var pt = null;
+        try {
+          pt = JSON.parse(sessionStorage.getItem('fg-pt') || 'null');
+        } catch (e) {}
+        if (motion && pt && pt.name && !first) {
+          d.classList.add('is-transitioning');
+          d.dataset.ptField = pt.field === 'ink' ? 'ink' : 'petrol';
+          d.style.setProperty('--pt-name', JSON.stringify(String(pt.name)));
+          d.style.setProperty('--pt-size', Math.round(Math.min(innerWidth * 0.22, (innerWidth * 0.9) / (String(pt.name).length * 0.5))) + 'px');
+          setTimeout(function () { d.classList.remove('is-transitioning'); }, 6000);
+        }
+        setTimeout(function () { d.classList.add('motion-ready'); }, first ? 7000 : 2500);
+      })();
+    </script>
+  </head>
+  <body data-page={page}>
+    <Loader lang={lang} />
+    <PageTransition />
+    <FilmGrain />
+    <a class="skip" href="#conteudo">{t.skip}</a>
+    <Nav lang={lang} altPath={altPath} page={page} projectName={projectName} />
+    <main id="conteudo" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

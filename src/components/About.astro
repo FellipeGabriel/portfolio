@@ -1,0 +1,100 @@
+---
+import { Picture } from 'astro:assets';
+import photo from '../assets/me/fellipe.jpg';
+import { ui, stack, type Lang } from '../data/content';
+import { sectionIds } from '../data/sections';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].about;
+---
+<section id={sectionIds[lang].about} class="about field-paper" data-field="paper" aria-labelledby="about-title">
+  <h2 id="about-title" class="display about-title" data-fit="0.62" data-split>{t.heading}</h2>
+  <div class="about-grid">
+    <figure class="about-photo plate">
+      <Picture quality={88} src={photo} formats={['avif', 'webp']} widths={[240, 480]} sizes="(max-width: 899px) 34vw, 12vw" alt={t.photoAlt} loading="lazy" />
+    </figure>
+    <div class="about-text prose">
+      {t.body.map((p) => <p>{p}</p>)}
+    </div>
+    <div class="about-stack">
+      <h3 class="label stack-title">{t.stackHeading}</h3>
+      <dl class="stack">
+        {stack[lang].map((s) => (
+          <div class="stack-row">
+            <dt>{s.group}</dt>
+            <dd>{s.items}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding: clamp(5rem, 14svh, 10rem) var(--pad) clamp(5rem, 12svh, 9rem);
+  }
+  .about-title {
+    text-align: right;
+    font-size: clamp(3rem, 15vw, 15rem);
+    margin-bottom: clamp(2rem, 6svh, 4.5rem);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    border-top: var(--rule) solid var(--ink);
+    padding-top: 1.5rem;
+  }
+  .about-photo {
+    grid-column: 1 / span 2;
+    aspect-ratio: 4 / 5;
+    filter: grayscale(1) contrast(1.08);
+    align-self: start;
+  }
+  .about-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 35%;
+  }
+  .about-text {
+    grid-column: 4 / span 4;
+    font-size: var(--step-1);
+    line-height: 1.42;
+  }
+  .about-stack {
+    grid-column: 8 / span 5;
+  }
+  .stack-title {
+    padding-bottom: 0.5rem;
+  }
+  .stack-row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) 2fr;
+    gap: var(--gutter);
+    padding: 0.6rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+  .stack-row dt {
+    font-weight: 700;
+  }
+  @media (max-width: 899px) {
+    .about-photo {
+      grid-column: 1 / span 4;
+    }
+    .about-text {
+      grid-column: 5 / -1;
+      font-size: var(--step-0);
+    }
+    .about-stack {
+      grid-column: 1 / -1;
+      margin-top: 2rem;
+    }
+    .stack-row {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+  }
+</style>

@@ -1,0 +1,232 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import heroPhoto from '../assets/photos/bokeh-row.jpg';
+import { ui, EMAIL, LINKEDIN, type Lang } from '../data/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].hero;
+const lines = ['Fellipe', 'Gabriel'];
+---
+<section class="hero field-petrol" data-field="petrol" aria-labelledby="hero-title">
+  <figure class="hero-img" data-hero-img>
+    <div class="hero-img-inner projector" data-hero-img-inner>
+      <Picture
+        quality={92}
+        src={heroPhoto}
+        formats={['avif', 'webp']}
+        widths={[800, 1200, 1700, 2400, 3000]}
+        sizes="(max-width: 760px) 100vw, 48vw"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+    <p class="hero-ghost display" aria-hidden="true">
+      {lines.map((l, i) => <span class="hero-line" data-hero-line={i}>{l}</span>)}
+    </p>
+  </figure>
+
+  <h1 id="hero-title" class="hero-title display">
+    {lines.map((l, i) => <span class="hero-line" data-hero-line={i}>{l}</span>)}
+  </h1>
+
+  <div class="hero-foot">
+    <p class="hero-role">{t.role}</p>
+    <p class="lead">{t.lead}</p>
+    <div class="hero-actions">
+      <div class="email-group" data-copy-group>
+        <a class="btn btn-solid email-link" href={`mailto:${EMAIL}`}>
+          <span class="visually-hidden">{t.emailCta}: </span>{EMAIL}
+        </a>
+        <button class="btn btn-solid copy-btn" type="button" data-copy={EMAIL} data-copied-label={t.copied} aria-label={t.copy}>
+          <Icon name="copy" class="icon icon-copy" /><Icon name="check" class="icon icon-check" />
+        </button>
+        <span class="visually-hidden" role="status" data-copy-status></span>
+      </div>
+      <a class="btn" href={LINKEDIN} rel="noopener" target="_blank">LinkedIn<Icon name="arrow-up-right" /></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --img-t: 4.75rem;
+    --pb: clamp(1.5rem, 4.5svh, 3rem);
+    --foot-h: 7.75rem;
+    --gap-top: clamp(1.25rem, 8svh - 2.5rem, 5rem);
+    --title-size: min(20.5cqw, (100svh - var(--img-t) - var(--gap-top) - var(--foot-h) - var(--pb) - 3.5rem) / 1.6);
+    --img-l: min(50cqw, var(--pad) + var(--title-size) * 2.3);
+    --title-top: calc(var(--img-t) + var(--gap-top));
+    position: relative;
+    container-type: inline-size;
+    height: 100svh;
+    min-height: 36rem;
+    padding: var(--title-top) var(--pad) var(--pb);
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+  }
+  .hero-title,
+  .hero-ghost {
+    font-size: var(--title-size);
+    line-height: 0.8;
+  }
+  .hero-title {
+    position: relative;
+    z-index: 2;
+    color: var(--amber);
+    margin-left: -0.02em;
+  }
+  .hero-line {
+    display: block;
+    will-change: transform;
+  }
+  .hero-img {
+    position: absolute;
+    top: var(--img-t);
+    left: var(--img-l);
+    right: 0;
+    bottom: calc(var(--pb) + var(--foot-h) + 1.5rem);
+    overflow: hidden;
+    z-index: 3;
+    background: var(--ink);
+  }
+  .hero-img-inner {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-img-inner :global(picture),
+  .hero-img-inner :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+  .hero-img-inner :global(img) {
+    object-fit: cover;
+    object-position: 12% 50%;
+  }
+  .hero-ghost {
+    position: absolute;
+    left: calc(var(--pad) - var(--img-l) - 0.02em);
+    top: calc(var(--title-top) - var(--img-t));
+    color: var(--paper);
+    pointer-events: none;
+    margin: 0;
+    white-space: nowrap;
+  }
+  .hero-foot {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    min-height: var(--foot-h);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0.75rem var(--gutter);
+    align-items: end;
+  }
+  .hero-role {
+    grid-column: 1 / span 3;
+    font-size: clamp(1.75rem, 1rem + 1.6vw, 3rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    font-variation-settings: 'wdth' 88;
+    text-wrap: balance;
+  }
+  .hero-foot .lead {
+    grid-column: 4 / span 5;
+    max-width: 40ch;
+  }
+  .hero-actions {
+    grid-column: 9 / -1;
+    justify-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+  .email-group {
+    display: flex;
+    min-width: 0;
+  }
+  .email-link {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .copy-btn {
+    border-left: 1px solid color-mix(in srgb, var(--solid-fg) 35%, transparent);
+    padding-inline: 1rem;
+  }
+  .copy-btn :global(.icon-check),
+  .copy-btn:global(.is-copied) :global(.icon-copy) {
+    display: none;
+  }
+  .copy-btn:global(.is-copied) :global(.icon-check) {
+    display: block;
+  }
+
+  @media (max-width: 1180px) and (min-width: 761px) {
+    .hero {
+      --foot-h: 10.5rem;
+    }
+    .hero-role {
+      grid-column: 1 / span 5;
+    }
+    .hero-foot .lead {
+      grid-column: 6 / -1;
+    }
+    .hero-actions {
+      grid-column: 1 / -1;
+      justify-self: start;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      --img-t: 3.75rem;
+      --img-l: 0cqw;
+      --img-h: clamp(10rem, 100svh - 29rem, 46svh);
+      --title-size: 24.5cqw;
+      --title-top: calc(var(--img-t) + var(--img-h) - var(--title-size) * 0.86);
+      height: auto;
+      min-height: 100svh;
+      padding-bottom: 2rem;
+    }
+    .hero-img {
+      bottom: auto;
+      height: var(--img-h);
+    }
+    .hero-foot {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.85rem;
+      min-height: 0;
+      padding-top: 1.25rem;
+    }
+    .hero-role,
+    .hero-foot .lead,
+    .hero-actions {
+      grid-column: 1;
+      justify-self: stretch;
+      justify-content: flex-start;
+    }
+    .hero-role {
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+    .hero-foot .lead {
+      font-size: 1.15rem;
+    }
+    .email-group {
+      width: 100%;
+    }
+    .email-link {
+      flex: 1;
+      font-size: clamp(0.78rem, 3.7vw, 0.95rem);
+      padding-inline: 0.85rem;
+      overflow-wrap: normal;
+      white-space: nowrap;
+    }
+  }
+</style>

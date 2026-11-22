@@ -1,0 +1,46 @@
+---
+import { withBase } from '../data/content';
+const site = Astro.site!;
+const base = withBase('/');
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fellipe Gabriel</title>
+    <meta name="description" content="Fellipe Gabriel, desenvolvedor full stack / full stack developer." />
+    <link rel="alternate" hreflang="pt-BR" href={new URL(withBase('/pt/'), site).href} />
+    <link rel="alternate" hreflang="en" href={new URL(withBase('/en/'), site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(base, site).href} />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <meta name="theme-color" content="#272c3b" />
+    <script is:inline define:vars={{ base }}>
+      (function () {
+        var lang = null;
+        try { lang = localStorage.getItem('lang'); } catch (e) {}
+        if (lang !== 'pt' && lang !== 'en') {
+          var prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
+          lang = 'en';
+          for (var i = 0; i < prefs.length; i++) {
+            var p = String(prefs[i]).toLowerCase();
+            if (p.indexOf('pt') === 0) { lang = 'pt'; break; }
+            if (p.indexOf('en') === 0) { lang = 'en'; break; }
+          }
+        }
+        location.replace(base + lang + '/' + location.hash);
+      })();
+    </script>
+    <style>
+      html { background: #272c3b; color: #dca46e; font-family: system-ui, sans-serif; }
+      body { margin: 0; min-height: 100vh; display: grid; place-content: center; gap: 1rem; padding: 2rem; }
+      a { color: inherit; font-weight: 700; font-size: 1.25rem; }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <p><a href={withBase('/pt/')}>Português</a></p>
+      <p><a href={withBase('/en/')}>English</a></p>
+    </noscript>
+  </body>
+</html>

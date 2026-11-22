@@ -1,0 +1,95 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { withBase } from '../data/content';
+
+type Field = 'amber' | 'ink' | 'paper' | 'petrol';
+interface Props {
+  image: ImageMetadata;
+  from: Field;
+  to: Field;
+  variant: 1 | 2;
+  position?: string;
+}
+const { image, from, to, variant, position = '50% 50%' } = Astro.props;
+const rim = (f: Field) => (f === 'paper' ? 'var(--paper-2)' : 'var(--paper)');
+const style = [
+  `--from: var(--${from})`,
+  `--to: var(--${to})`,
+  `--from-rim: ${rim(from)}`,
+  `--to-rim: ${rim(to)}`,
+  `--edge-top: url(${withBase(`/collage/tear-${variant}-top.svg`)})`,
+  `--edge-bottom: url(${withBase(`/collage/tear-${variant}-bottom.svg`)})`,
+  `--pos: ${position}`,
+].join('; ');
+---
+<div class="tear" aria-hidden="true" data-tear style={style}>
+  <div class="tear-img" data-tear-img>
+    <Picture quality={86} src={image} formats={['avif', 'webp']} widths={[800, 1400, 2000]} sizes="100vw" alt="" loading="lazy" />
+  </div>
+  <span class="tear-layer tear-from-rim"></span>
+  <span class="tear-layer tear-from"></span>
+  <span class="tear-layer tear-to-rim"></span>
+  <span class="tear-layer tear-to"></span>
+</div>
+
+<style>
+  .tear {
+    --rim: clamp(3px, 0.35vw, 6px);
+    position: relative;
+    height: clamp(5rem, 3rem + 8vw, 11rem);
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .tear-img {
+    position: absolute;
+    inset: -25% 0;
+  }
+  .tear-img :global(picture),
+  .tear-img :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+  .tear-img :global(img) {
+    object-fit: cover;
+    object-position: var(--pos);
+  }
+  .tear-layer {
+    position: absolute;
+    inset: 0;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  .tear-from,
+  .tear-from-rim {
+    inset: -2px 0 0 0;
+    -webkit-mask-image: var(--edge-top);
+    mask-image: var(--edge-top);
+  }
+  .tear-to,
+  .tear-to-rim {
+    inset: 0 0 -2px 0;
+    -webkit-mask-image: var(--edge-bottom);
+    mask-image: var(--edge-bottom);
+  }
+  .tear-from {
+    background: var(--from);
+  }
+  .tear-to {
+    background: var(--to);
+  }
+  .tear-from-rim {
+    background: var(--from-rim);
+    -webkit-mask-position: 0 var(--rim);
+    mask-position: 0 var(--rim);
+  }
+  .tear-to-rim {
+    background: var(--to-rim);
+    -webkit-mask-position: 0 calc(var(--rim) * -1);
+    mask-position: 0 calc(var(--rim) * -1);
+  }
+</style>

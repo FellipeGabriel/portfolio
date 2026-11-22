@@ -1,0 +1,44 @@
+---
+import { ui, REPO, type Lang } from '../data/content';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].footer;
+---
+<footer class="footer field-paper" data-field="paper">
+  <p><strong class="footer-name">Fellipe Gabriel</strong>, 2026</p>
+  <p><a href="https://commons.wikimedia.org/wiki/File:Clouds_in_Chichester_District_(55621778044).jpg" target="_blank" rel="noopener">{t.credits}</a></p>
+  <p><a href={REPO} target="_blank" rel="noopener">{t.source}</a></p>
+</footer>
+
+<style>
+  .footer {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    padding: 1.5rem var(--pad) 1.75rem;
+    font-size: var(--step--1);
+    font-variation-settings: 'wdth' 112;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .footer p:nth-child(1) {
+    grid-column: 1 / span 3;
+  }
+  .footer-name {
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .footer p:nth-child(2) {
+    grid-column: 4 / span 6;
+  }
+  .footer p:nth-child(3) {
+    grid-column: 10 / span 3;
+    justify-self: end;
+  }
+  @media (max-width: 899px) {
+    .footer p:nth-child(n) {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

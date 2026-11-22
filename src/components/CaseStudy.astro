@@ -1,0 +1,395 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import ProjectLink from './ProjectLink.astro';
+import QrCode from './QrCode.astro';
+import speechWave from '../assets/photos/speech-wave.jpg';
+import lyfiaMap from '../assets/photos/lyfia-map.jpg';
+import { ui, routes, publications, withBase, type Lang } from '../data/content';
+import { projects, otherSlug, type Slug } from '../data/projects';
+import { sectionIds } from '../data/sections';
+
+interface Props { lang: Lang; slug: Slug }
+const { lang, slug } = Astro.props;
+const other: Lang = lang === 'pt' ? 'en' : 'pt';
+const t = ui[lang].caseStudy;
+const p = projects[lang].find((x) => x.slug === slug)!;
+const next = projects[lang].find((x) => x.slug === otherSlug(slug))!;
+const pubs = publications[lang].filter((x) => x.project === slug);
+const nextField = next.field;
+const nextImage = slug === 'lyfia' ? speechWave : lyfiaMap;
+const nextPosition = slug === 'lyfia' ? '50% 50%' : '50% 6%';
+const title = `${p.name}: ${p.kind}. ${ui[lang].title.split(',')[0]}`;
+---
+<Base
+  lang={lang}
+  page="project"
+  path={routes[lang].project(slug)}
+  altPath={routes[other].project(slug)}
+  projectName={p.name}
+  topField={p.field}
+  title={title}
+  description={p.lead}
+>
+  <article class="case">
+    <header class={`case-head field-${p.field}`} data-field={p.field}>
+      <h1 class="display case-title" style={`view-transition-name: title-${p.slug}; --title-wdth: ${p.name.length <= 6 ? 125 : 62}`}>{p.name}</h1>
+      <div class="case-intro">
+        <p class="label case-kind">{p.kind}</p>
+        <p class="lead case-lead">{p.lead}</p>
+        <div class="case-links">
+          {p.links.map((l, i) => <ProjectLink href={l.href} label={l.label} kind={l.kind} variant={i === 0 ? 'solid' : 'button'} />)}
+        </div>
+        {p.qr && <QrCode url={p.qr.url} label={p.qr.label} class="case-qr" />}
+      </div>
+      <dl class="case-meta">
+        {p.meta.map((m) => (
+          <div>
+            <dt class="label">{m.label}</dt>
+            <dd>{m.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </header>
+
+    <div class={`case-plate plate plate-${p.slug}`} style={`view-transition-name: plate-${p.slug}`} data-case-plate>
+      {p.slug === 'lyfia' ? (
+        <Picture quality={88} src={p.cover.src} formats={['avif', 'webp']} widths={[800, 1400, 2200]} sizes="100vw" alt={p.cover.alt} loading="eager" fetchpriority="high" />
+      ) : (
+        <div class="case-phones">
+          {[p.cover, ...p.secondary].map((s) => (
+            <div class="case-phone">
+              <Picture quality={88} src={s.src} formats={['avif', 'webp']} widths={[320, 640]} sizes="(max-width: 760px) 30vw, 22vw" alt={s.alt} loading="eager" />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="case-body field-paper" data-field="paper">
+      {p.sections.map((s) => (
+        <section class="case-section">
+          <h2 class="case-h2">{s.heading}</h2>
+          <div class="prose case-prose">
+            {s.body.map((b) => <p>{b}</p>)}
+          </div>
+          {s.shot && (
+            <figure class={`case-shot ${s.shot.src.width < s.shot.src.height ? 'is-portrait' : ''}`}>
+              <div class="plate">
+                <Picture quality={88} src={s.shot.src} formats={['avif', 'webp']} widths={[480, 900, 1600]} sizes="(max-width: 899px) 100vw, 60vw" alt={s.shot.alt} loading="lazy" />
+              </div>
+              {s.shot.caption && <figcaption class="caption">{s.shot.caption}</figcaption>}
+            </figure>
+          )}
+        </section>
+      ))}
+
+      {pubs.length > 0 && (
+        <section class="case-section">
+          <h2 class="case-h2">{t.publications}</h2>
+          <ul class="case-pubs">
+            {pubs.map((x) => (
+              <li>
+                <p class="case-pub-title">{x.title}</p>
+                <p>{x.venue}, {x.year}. <span class="case-pub-status">{x.status}.</span></p>
+                {x.authors && <p class="case-pub-authors">{x.authors}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+
+    <nav class={`case-next field-${nextField}`} data-field={nextField} aria-label={t.next}>
+      <div class="case-next-img" aria-hidden="true" style={`--next-pos: ${nextPosition}`}>
+        <Picture quality={88} src={nextImage} formats={['avif', 'webp']} widths={[1000, 1600, 2400, 3200]} sizes="100vw" alt="" loading="lazy" />
+        {next.slug === 'lyfia' && <img class="map-lines" src={withBase('/collage/contours.svg')} alt="" width="1600" height="1000" loading="lazy" decoding="async" />}
+      </div>
+      <a href={routes[lang].project(next.slug)} class="case-next-link">
+        <span class="display case-next-title" style={`view-transition-name: title-${next.slug}; --title-wdth: ${next.name.length <= 6 ? 125 : 62}`}>{next.name}<Icon name="arrow-right" class="icon next-arrow" /></span>
+        <span class="label">{t.next}</span>
+      </a>
+      <a class="arrow-link case-back" href={`${routes[lang].home}#${sectionIds[lang].projects}`}><Icon name="arrow-left" />{t.back}</a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .case-head {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    padding: clamp(5rem, 14svh, 8rem) var(--pad) clamp(3rem, 8svh, 5rem);
+  }
+  .field-ink .case-title {
+    color: var(--amber);
+  }
+  .case-title,
+  .case-next-title {
+    font-variation-settings: 'wdth' var(--title-wdth, 62);
+  }
+  .case-title {
+    grid-column: 1 / -1;
+    font-size: clamp(3.5rem, 14vw, 16rem);
+    line-height: 0.8;
+    margin-bottom: clamp(1.5rem, 4svh, 3rem);
+    overflow-wrap: normal;
+  }
+  .case-intro {
+    grid-column: 1 / span 6;
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+  .case-kind {
+    color: var(--accent);
+  }
+  .field-petrol .case-kind {
+    color: var(--paper);
+  }
+  .case-lead {
+    max-width: 38ch;
+  }
+  .case-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .case-meta {
+    grid-column: 8 / span 5;
+    border-top: var(--rule) solid currentColor;
+  }
+  .case-meta > div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--gutter);
+    padding: 0.6rem 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+  }
+
+  .case-plate {
+    margin: 0;
+    background: var(--paper);
+  }
+  .plate-lyfia :global(img) {
+    width: 100%;
+    height: auto;
+  }
+  .plate-recuperavc {
+    background: var(--recupera-green);
+    padding: clamp(2rem, 6vw, 6rem) var(--pad);
+  }
+  .case-phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 4vw, 5rem);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .case-phone {
+    border: 6px solid var(--ink);
+    background: var(--ink);
+    aspect-ratio: 720 / 1530;
+    overflow: hidden;
+  }
+  .case-phone :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 0;
+  }
+
+  .figures {
+    padding: clamp(3rem, 8svh, 5rem) var(--pad) 0;
+  }
+  .figures ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gutter);
+    border-top: var(--rule) solid var(--ink);
+    padding-top: 1rem;
+  }
+  .figures li {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .figure-value {
+    white-space: nowrap;
+    font-size: clamp(2.25rem, 5vw, 5.5rem);
+    color: var(--petrol);
+    line-height: 0.85;
+  }
+  .figure-label {
+    font-weight: 650;
+  }
+
+  .case-body {
+    padding: clamp(3rem, 10svh, 7rem) var(--pad) clamp(4rem, 12svh, 8rem);
+  }
+  .case-section {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    border-top: var(--rule) solid var(--ink);
+    padding-top: 1.25rem;
+  }
+  .case-section + .case-section {
+    margin-top: clamp(3.5rem, 9svh, 6.5rem);
+  }
+  .case-h2 {
+    grid-column: 1 / span 4;
+    font-size: var(--step-3);
+    font-weight: 900;
+    font-variation-settings: 'wdth' 62;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.005em;
+  }
+  .case-prose {
+    grid-column: 5 / span 7;
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+  .case-shot {
+    grid-column: 5 / -1;
+    margin-top: 1.5rem;
+  }
+  .case-shot .plate {
+    border: var(--rule) solid var(--ink);
+  }
+  .case-shot.is-portrait {
+    grid-column: 5 / span 3;
+  }
+  .case-pubs {
+    grid-column: 5 / span 7;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .case-pubs li {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .case-pub-title {
+    font-size: var(--step-1);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .case-pub-status {
+    font-weight: 700;
+  }
+  .case-pub-authors {
+    color: var(--ink);
+  }
+
+  .case-next {
+    position: relative;
+    overflow: hidden;
+    min-height: 80svh;
+    padding: clamp(4rem, 12svh, 8rem) var(--pad) var(--pad);
+    display: grid;
+    align-content: space-between;
+    gap: 2rem;
+  }
+  .case-next-img {
+    position: absolute;
+    inset: 0;
+  }
+  .case-next-img :global(picture),
+  .case-next-img :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+  .case-next-img :global(img) {
+    object-fit: cover;
+    object-position: var(--next-pos, 50% 50%);
+  }
+  .case-next-img .map-lines {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .case-next-link,
+  .case-back {
+    position: relative;
+    z-index: 1;
+  }
+  .case-next .label,
+  .case-back {
+    justify-self: start;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.4rem 0.6rem;
+  }
+  .case-back {
+    border-bottom: 0;
+  }
+  .case-next-title {
+    color: var(--paper);
+  }
+  .field-ink .case-next-title {
+    color: var(--amber);
+  }
+  .case-intro :global(.case-qr) {
+    margin-top: 1rem;
+  }
+  .case-next-link {
+    text-decoration: none;
+    display: grid;
+    gap: 1rem;
+  }
+  .case-next-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1em;
+    font-size: clamp(3rem, 12vw, 13rem);
+    transition: letter-spacing 0.5s var(--ease-out);
+  }
+  .case-next-link:hover .case-next-title {
+    letter-spacing: 0.02em;
+  }
+  .case-next-title :global(.next-arrow) {
+    width: 0.6em;
+    height: 0.6em;
+    stroke-width: 2.5;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .case-next-link:hover :global(.next-arrow) {
+    transform: translateX(0.12em);
+  }
+  .case-back {
+    justify-self: start;
+  }
+
+  @media (max-width: 899px) {
+    .case-intro,
+    .case-meta,
+    .case-h2,
+    .case-prose,
+    .case-shot,
+    .case-shot.is-portrait,
+    .case-pubs {
+      grid-column: 1 / -1;
+    }
+    .case-meta {
+      margin-top: 1.5rem;
+    }
+    .case-meta > div {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+    .case-prose {
+      margin-top: 0.75rem;
+      font-size: var(--step-0);
+    }
+    .case-shot.is-portrait {
+      max-width: 60%;
+    }
+    .figures ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 1.5rem;
+    }
+  }
+</style>

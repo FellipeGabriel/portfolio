@@ -1,0 +1,79 @@
+---
+const columns = Array.from({ length: 12 });
+---
+<div class="pt" aria-hidden="true" data-pt>
+  <div class="pt-cols">
+    {columns.map(() => <span class="pt-col" data-pt-col />)}
+  </div>
+  <div class="pt-mask">
+    <p class="pt-name" data-pt-name></p>
+  </div>
+</div>
+
+<style>
+  .pt {
+    --pt-bg: var(--petrol);
+    --pt-fg: var(--amber);
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .pt[data-field='ink'],
+  :global(html[data-pt-field='ink']) .pt {
+    --pt-bg: var(--ink);
+    --pt-fg: var(--amber);
+  }
+  .pt[data-field='petrol'],
+  :global(html[data-pt-field='petrol']) .pt {
+    --pt-bg: var(--petrol);
+    --pt-fg: var(--paper);
+  }
+  .pt:global(.is-active),
+  :global(html.is-transitioning) .pt {
+    visibility: visible;
+    pointer-events: all;
+  }
+  .pt-cols {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .pt-col {
+    background: var(--pt-bg);
+    box-shadow: 1px 0 0 var(--pt-bg);
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+  }
+  :global(html.is-transitioning) .pt-col {
+    transform: scaleY(1);
+  }
+  .pt-mask {
+    position: absolute;
+    left: var(--pad);
+    right: var(--pad);
+    bottom: var(--pad);
+    overflow: hidden;
+    padding-top: 0.06em;
+  }
+  .pt-name {
+    font-family: var(--font);
+    font-weight: 900;
+    font-variation-settings: 'wdth' 62;
+    text-transform: uppercase;
+    font-size: var(--pt-size, clamp(5rem, 22vw, 22rem));
+    line-height: 0.8;
+    letter-spacing: -0.012em;
+    color: var(--pt-fg);
+    white-space: nowrap;
+    transform: translateY(110%);
+  }
+  :global(html.is-transitioning) .pt-name {
+    transform: none;
+  }
+  :global(html.is-transitioning) .pt-name:empty::before {
+    content: var(--pt-name, '');
+  }
+</style>

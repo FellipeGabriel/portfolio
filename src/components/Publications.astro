@@ -1,0 +1,103 @@
+---
+import { ui, publications, routes, type Lang } from '../data/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].pubs;
+const list = publications[lang];
+const projectName = { lyfia: 'Lyfia', recuperavc: 'RecuperAVC' } as const;
+---
+<section class="pubs field-ink" data-field="ink" aria-labelledby="pubs-title">
+  <h2 id="pubs-title" class="display pubs-title" data-fit data-split>{t.heading}</h2>
+  <ol class="pubs-list">
+    {list.map((p) => (
+      <li class="pub">
+        <div class="pub-side">
+          <p class="pub-year display tnum">{p.year}</p>
+          <p class="label pub-status">{p.status}</p>
+        </div>
+        <div class="pub-main">
+          <h3 class="pub-title" lang={/[ãçõéêíóú]/i.test(p.title) ? 'pt-BR' : 'en'}>{p.title}</h3>
+          <p class="pub-venue">{p.venue}<span class="pub-status-inline">. {p.status}</span></p>
+          {p.authors && <p class="pub-authors">{p.authors}</p>}
+        </div>
+        <a class="arrow-link pub-project" href={routes[lang].project(p.project)}>{projectName[p.project]}</a>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .pubs {
+    padding: clamp(5rem, 14svh, 10rem) var(--pad);
+  }
+  .pubs-title {
+    font-size: clamp(3rem, 11vw, 15rem);
+    margin-bottom: clamp(2rem, 6svh, 4.5rem);
+  }
+  .pub {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    padding: 1.5rem 0 1.75rem;
+    border-top: var(--rule) solid var(--paper);
+  }
+  .pub-side {
+    grid-column: 1 / span 3;
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .pub-year {
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    color: var(--amber);
+    line-height: 0.82;
+  }
+  .pub-main {
+    grid-column: 4 / span 7;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .pub-status {
+    color: var(--amber);
+  }
+  .pub-title {
+    font-size: var(--step-2);
+    font-weight: 700;
+    line-height: 1.12;
+    font-variation-settings: 'wdth' 92;
+    text-wrap: balance;
+    max-width: 38ch;
+  }
+  .pub-status-inline {
+    display: none;
+    font-weight: 700;
+    color: var(--amber);
+  }
+  .pub-venue,
+  .pub-authors {
+    max-width: 62ch;
+  }
+  .pub-authors {
+    color: var(--paper);
+  }
+  .pub-project {
+    grid-column: 11 / span 2;
+    justify-self: end;
+    align-self: start;
+  }
+  @media (max-width: 899px) {
+    .pub-side,
+    .pub-main,
+    .pub-project {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+    .pub-side .pub-status {
+      display: none;
+    }
+    .pub-status-inline {
+      display: inline;
+    }
+  }
+</style>

@@ -1,0 +1,126 @@
+---
+import { getImage } from 'astro:assets';
+import heroPhoto from '../assets/photos/bokeh-row.jpg';
+import { ui, type Lang } from '../data/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const fill = await getImage({ src: heroPhoto, width: 1800, format: 'webp', quality: 85 });
+const columns = Array.from({ length: 12 });
+---
+<div class="loader" aria-hidden="true" data-loader style={`--loader-fill: url(${fill.src})`}>
+  <div class="loader-cols">
+    {columns.map(() => <span class="loader-col" data-loader-col />)}
+  </div>
+  <p class="loader-name" data-loader-meta>Fellipe Gabriel</p>
+  <p class="loader-role" data-loader-meta>{ui[lang].hero.role}</p>
+  <div class="loader-count-mask">
+    <p class="loader-count" data-loader-count>000</p>
+  </div>
+  <div class="loader-bar"><span data-loader-bar /></div>
+</div>
+
+<style>
+  .loader {
+    display: none;
+  }
+  :global(html.is-loading) .loader {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    color: var(--paper);
+    pointer-events: all;
+  }
+  .loader-cols {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .loader-col {
+    background: var(--ink);
+    transform-origin: 50% 0;
+    box-shadow: 1px 0 0 var(--ink);
+    transition:
+      background-color 0.45s var(--ease-out),
+      box-shadow 0.45s var(--ease-out);
+  }
+  .loader.is-cream .loader-col {
+    background: var(--paper);
+    box-shadow: 1px 0 0 var(--paper);
+  }
+  .loader.is-cream .loader-name,
+  .loader.is-cream .loader-role {
+    color: var(--ink);
+  }
+  .loader.is-cream .loader-bar {
+    background: color-mix(in srgb, var(--ink) 20%, transparent);
+  }
+  .loader.is-cream .loader-bar span {
+    background: var(--ink);
+  }
+  .loader-name,
+  .loader-role {
+    position: absolute;
+    top: calc(var(--pad) * 0.8);
+    font-size: var(--step--1);
+    font-weight: 650;
+    font-variation-settings: 'wdth' 112;
+    letter-spacing: 0.02em;
+  }
+  .loader-name {
+    left: var(--pad);
+    font-weight: 800;
+  }
+  .loader-role {
+    right: var(--pad);
+    color: var(--amber);
+  }
+  .loader-name,
+  .loader-role,
+  .loader-bar,
+  .loader-bar span {
+    transition:
+      color 0.45s var(--ease-out),
+      background-color 0.45s var(--ease-out);
+  }
+  .loader-count-mask {
+    position: absolute;
+    left: var(--pad);
+    bottom: calc(var(--pad) + 1.5rem);
+    overflow: hidden;
+    padding-top: 0.05em;
+  }
+  .loader-count {
+    font-family: var(--font);
+    font-weight: 900;
+    font-variation-settings: 'wdth' 62;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(9rem, 38vw, 34rem);
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+    color: var(--amber);
+    background-image: var(--loader-fill);
+    background-size: 160% auto;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .loader-bar {
+    position: absolute;
+    left: var(--pad);
+    right: var(--pad);
+    bottom: var(--pad);
+    height: 2px;
+    background: color-mix(in srgb, var(--paper) 25%, transparent);
+  }
+  .loader-bar span {
+    display: block;
+    height: 100%;
+    background: var(--amber);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+</style>

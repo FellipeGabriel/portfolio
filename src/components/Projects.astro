@@ -1,0 +1,465 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import ProjectLink from './ProjectLink.astro';
+import QrCode from './QrCode.astro';
+import cloudsGlow from '../assets/photos/clouds-glow.jpg';
+import { ui, routes, type Lang } from '../data/content';
+import { projects } from '../data/projects';
+import { sectionIds } from '../data/sections';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang].projects;
+const list = projects[lang];
+const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
+---
+<section id={sectionIds[lang].projects} class="projects" aria-labelledby="projects-title" data-projects>
+  <div class="track" data-track>
+    <div class="panel panel-intro field-ink" data-field="ink" data-intro>
+      <div class="intro-img projector" aria-hidden="true" data-intro-img>
+        <Picture quality={88} src={cloudsGlow} formats={['avif', 'webp']} widths={[1000, 1500, 1920]} sizes="(max-width: 899px) 100vw, 80vw" alt="" loading="lazy" />
+      </div>
+      <h2 id="projects-title" class="display intro-title" data-fit data-split>{t.heading}</h2>
+      <div class="intro-foot" data-intro-foot>
+        <p class="lead">{t.lead}</p>
+        <ol class="intro-index">
+          {list.map((p) => (
+            <li>
+              <a href={routes[lang].project(p.slug)}>
+                <span class="intro-name">{p.name}</span>
+                <span class="label">{p.kind}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    {list.map((p) => (
+      <article
+        class={`panel panel-project field-${p.field} project-${p.slug}`}
+        data-field={p.field}
+        data-panel
+        style={`--title-wdth:${titleWidth(p.name)}`}
+        aria-labelledby={`p-${p.slug}`}
+      >
+        <h3 id={`p-${p.slug}`} class="display project-title" style={`view-transition-name: title-${p.slug}`} data-project-title>
+          {p.name}
+        </h3>
+
+        <div class={`plate project-plate plate-${p.slug}`} style={`view-transition-name: plate-${p.slug}`} data-plate>
+          <p class="display project-ghost" aria-hidden="true" data-project-ghost>{p.name}</p>
+          {p.slug === 'lyfia' ? (
+            <div class="stage stage-lyfia">
+              <figure class="screen screen-desktop" data-shot>
+                <Picture quality={88} src={p.cover.src} formats={['avif', 'webp']} widths={[800, 1300, 2000]} sizes="(max-width: 899px) 70vw, 44vw" alt={p.cover.alt} loading="lazy" />
+              </figure>
+              <figure class="screen screen-phone" data-shot>
+                <Picture quality={88} src={p.secondary[0].src} formats={['avif', 'webp']} widths={[300, 520, 800]} sizes="(max-width: 899px) 22vw, 13vw" alt={p.secondary[0].alt} loading="lazy" />
+              </figure>
+            </div>
+          ) : (
+            <div class="stage stage-phones">
+              {[p.cover, ...p.secondary].map((s) => (
+                <figure class="screen phone" data-shot>
+                  <Picture quality={88} src={s.src} formats={['avif', 'webp']} widths={[320, 640]} sizes="(max-width: 899px) 30vw, 15vw" alt={s.alt} loading="lazy" />
+                </figure>
+              ))}
+            </div>
+          )}
+          {p.qr && <QrCode url={p.qr.url} label={p.qr.label} class="plate-qr" />}
+        </div>
+
+        <div class="project-body" data-project-body>
+          <p class="label project-kind">{p.kind}</p>
+          <p class="lead project-lead">{p.lead}</p>
+          <ul class="facts">
+            {p.facts.map((f) => <li>{f}</li>)}
+          </ul>
+          <div class="project-links">
+            <a class="btn btn-solid" href={routes[lang].project(p.slug)}>{t.howItWasMade}<Icon name="arrow-right" /></a>
+            {p.links.map((l) => <ProjectLink href={l.href} label={l.label} kind={l.kind} />)}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="track-progress" aria-hidden="true"><span data-track-progress></span></div>
+</section>
+
+<style>
+  .projects {
+    position: relative;
+  }
+  .track {
+    display: flex;
+    flex-direction: column;
+  }
+  .panel {
+    position: relative;
+    container-type: inline-size;
+  }
+
+  .panel-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-height: 100svh;
+    padding: clamp(5rem, 12svh, 8rem) var(--pad) var(--pad);
+    overflow: hidden;
+  }
+  .intro-img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--ink);
+  }
+  .intro-img :global(picture),
+  .intro-img :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+  .intro-img :global(img) {
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+  .intro-title {
+    position: relative;
+    z-index: 1;
+    color: var(--paper);
+    font-size: clamp(3.5rem, 15vw, 22rem);
+  }
+  .intro-foot {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gutter);
+    align-items: end;
+  }
+  .intro-foot .lead {
+    grid-column: 1 / span 6;
+    background: var(--ink);
+    padding: 1.25rem 1.5rem;
+    max-width: none;
+  }
+  .intro-index {
+    grid-column: 7 / -1;
+    display: grid;
+    background: var(--ink);
+    padding: 0.5rem 1.5rem;
+  }
+  .intro-index li + li {
+    border-top: 1px solid color-mix(in srgb, var(--paper) 35%, transparent);
+  }
+  .intro-index a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    text-decoration: none;
+    transition: color 0.3s var(--ease-out);
+  }
+  .intro-index .label {
+    text-align: right;
+  }
+  .intro-index a:hover {
+    color: var(--amber);
+  }
+  .intro-name {
+    font-size: var(--step-3);
+    font-weight: 900;
+    font-variation-settings: 'wdth' 62;
+    text-transform: uppercase;
+    line-height: 0.9;
+  }
+
+  .panel-project {
+    padding: clamp(4.5rem, 11svh, 7rem) var(--pad) clamp(3rem, 8svh, 5rem);
+    display: flex;
+    flex-direction: column;
+  }
+  .field-petrol {
+    --ghost: var(--petrol);
+    --plate-bg: var(--lyfia-cream);
+  }
+  .field-ink {
+    --ghost: var(--ink);
+    --plate-bg: var(--recupera-green);
+  }
+  .project-title,
+  .project-ghost {
+    font-variation-settings: 'wdth' var(--title-wdth, 62);
+    line-height: 0.8;
+    white-space: nowrap;
+  }
+  .project-title {
+    font-size: clamp(3.5rem, 19cqw, 9rem);
+    margin-left: -0.02em;
+  }
+  .field-ink .project-title {
+    color: var(--amber);
+  }
+  .project-ghost {
+    display: none;
+  }
+  .project-plate {
+    position: relative;
+    order: 2;
+    margin-top: 1.5rem;
+    background: var(--plate-bg);
+    padding: clamp(1rem, 5cqw, 2.5rem);
+  }
+  .project-body {
+    order: 3;
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+  .project-kind {
+    color: var(--accent);
+  }
+  .project-lead {
+    max-width: 36ch;
+  }
+  .facts {
+    border-top: var(--rule) solid currentColor;
+  }
+  .facts li {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+    line-height: 1.35;
+  }
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .stage {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .screen {
+    margin: 0;
+    flex: none;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .screen :global(picture),
+  .screen :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .screen :global(img) {
+    object-fit: cover;
+    object-position: 50% 0;
+  }
+  .stage-lyfia {
+    gap: clamp(0.6rem, 3cqw, 2rem);
+  }
+  .screen-desktop {
+    flex: 1 1 auto;
+    aspect-ratio: 2880 / 1800;
+    border: var(--rule) solid var(--ink);
+  }
+  .screen-phone {
+    width: 24%;
+    aspect-ratio: 1170 / 2532;
+    border: 4px solid var(--ink);
+  }
+  .stage-phones {
+    gap: clamp(0.6rem, 4cqw, 2.5rem);
+  }
+  .phone {
+    width: 30%;
+    aspect-ratio: 720 / 1530;
+    border: 4px solid var(--ink);
+  }
+  .project-plate :global(.plate-qr) {
+    position: absolute;
+    top: clamp(1rem, 2.4cqw, 2rem);
+    right: clamp(1rem, 2.4cqw, 2rem);
+    z-index: 3;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    color: var(--ink);
+  }
+  .project-plate :global(.plate-qr .qr-code) {
+    width: 5.5rem;
+    padding: 0.45rem;
+  }
+  .project-plate :global(.plate-qr .qr-label) {
+    max-width: 14ch;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  .track-progress {
+    display: none;
+  }
+
+  @media (max-width: 899px) {
+    .panel-intro {
+      min-height: 0;
+    }
+    .intro-foot .lead,
+    .intro-index {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .panel-project {
+      --title-size: min(12.5cqw, 22svh);
+      --title-top: clamp(4.75rem, 11svh, 6.5rem);
+      --plate-t: calc(var(--title-top) + var(--title-size) * 0.34);
+      --plate-l: 43cqw;
+      --band: calc(var(--title-top) + var(--title-size) * 0.8 - var(--plate-t) + 1.25rem);
+      min-height: 100svh;
+      padding: 0 var(--pad) var(--pad);
+      display: block;
+    }
+    .project-title {
+      position: absolute;
+      top: var(--title-top);
+      left: var(--pad);
+      z-index: 2;
+      font-size: var(--title-size);
+    }
+    .project-ghost {
+      display: block;
+      position: absolute;
+      z-index: 2;
+      left: calc(var(--pad) - var(--plate-l) - 0.02em);
+      top: calc(var(--title-top) - var(--plate-t));
+      font-size: var(--title-size);
+      color: var(--ghost);
+      pointer-events: none;
+    }
+    .project-plate {
+      position: absolute;
+      top: var(--plate-t);
+      left: var(--plate-l);
+      right: var(--pad);
+      bottom: var(--pad);
+      margin: 0;
+      padding: 0;
+      z-index: 3;
+    }
+    .stage {
+      position: absolute;
+      inset: var(--band) 0 0 0;
+      padding: clamp(1rem, 4svh, 2.5rem) clamp(1rem, 3vw, 3.5rem);
+      container-type: size;
+      align-items: center;
+    }
+    .stage-lyfia {
+      --gap: clamp(0.75rem, 3cqw, 2.25rem);
+      --dh: min(100cqh, (100cqw - var(--gap)) / 2.06);
+      gap: var(--gap);
+    }
+    .screen-desktop {
+      flex: none;
+      height: var(--dh);
+      width: calc(var(--dh) * 1.6);
+    }
+    .screen-phone {
+      height: var(--dh);
+      width: calc(var(--dh) * 0.462);
+      border-width: 5px;
+    }
+    .stage-phones {
+      --gap: clamp(0.75rem, 4cqw, 3rem);
+      --ph: min(100cqh, (100cqw - var(--gap) * 2) / 1.41);
+      gap: var(--gap);
+    }
+    .phone {
+      height: var(--ph);
+      width: calc(var(--ph) * 0.47);
+      border-width: 5px;
+    }
+    .project-body {
+      position: absolute;
+      left: var(--pad);
+      bottom: var(--pad);
+      width: calc(var(--plate-l) - var(--pad) * 2);
+      margin: 0;
+      gap: 0.85rem;
+    }
+    .project-lead {
+      font-size: clamp(1.15rem, 0.9rem + 0.7vw, 1.6rem);
+      line-height: 1.25;
+    }
+    .facts li {
+      padding: 0.45rem 0;
+      font-size: clamp(0.92rem, 0.85rem + 0.2vw, 1.05rem);
+    }
+  }
+
+  @media (min-width: 900px) and (max-height: 780px) {
+    .project-body {
+      gap: 0.6rem;
+    }
+    .project-lead {
+      font-size: var(--step-0);
+    }
+    .facts li {
+      padding: 0.3rem 0;
+      font-size: 0.9rem;
+    }
+    .project-plate :global(.plate-qr) {
+      display: none;
+    }
+  }
+
+  @media (min-width: 900px) {
+    :global(html.motion) .track {
+      flex-direction: row;
+      width: max-content;
+      height: 100svh;
+      will-change: transform;
+    }
+    :global(html.motion) .panel {
+      flex: none;
+      height: 100svh;
+      min-height: 0;
+      width: 100vw;
+    }
+    :global(html.motion) .panel-intro {
+      width: 76vw;
+    }
+    :global(html.motion) .intro-foot .lead {
+      grid-column: 1 / span 5;
+    }
+    :global(html.motion) .intro-index {
+      grid-column: 6 / -1;
+    }
+    :global(html.motion) .track-progress {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .track-progress span {
+      display: block;
+      height: 100%;
+      background: var(--amber);
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+    }
+  }
+</style>

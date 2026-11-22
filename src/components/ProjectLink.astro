@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import playIcon from '../assets/icons/google-play.png';
+
+interface Props {
+  href: string;
+  label: string;
+  kind: 'web' | 'play' | 'github';
+  variant?: 'link' | 'button' | 'solid';
+}
+const { href, label, kind, variant = 'link' } = Astro.props;
+const cls = variant === 'link' ? 'arrow-link pl' : `btn pl ${variant === 'solid' ? 'btn-solid' : ''}`;
+---
+<a class={cls} href={href} target="_blank" rel="noopener">
+  {kind === 'play' && <Image src={playIcon} alt="" width={40} height={40} class="pl-icon pl-play" />}
+  {kind === 'github' && <Icon name="github" class="icon pl-icon" />}
+  <span>{label}</span>
+  {kind === 'web' && <Icon name="arrow-up-right" />}
+</a>
+
+<style>
+  .pl {
+    align-items: center;
+  }
+  .pl :global(.pl-icon) {
+    width: 1.15em;
+    height: 1.15em;
+    flex: none;
+  }
+</style>
