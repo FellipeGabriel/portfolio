@@ -42,7 +42,7 @@ export const ui = {
       heading: 'Sobre',
       body: [
         'No trabalho, passo por todas as camadas de uma aplicação web: modelagem no PostgreSQL, API em Node.js, interface em React, testes automatizados e CI/CD.',
-        'Na UFPR, faço pesquisa em saúde digital com o Prof. Alessandro Brawerman. Lá trabalho com R e estatística espacial no Lyfia e com Kotlin e código nativo em C/C++ no RecuperAVC.',
+        'Na UFPR, faço pesquisa em saúde digital: R e estatística espacial no Lyfia, Kotlin e código nativo em C/C++ no RecuperAVC.',
         'Idiomas: português (nativo), inglês (C1) e alemão (B1).',
       ],
       stackHeading: 'Com o que eu trabalho',
@@ -99,7 +99,7 @@ export const ui = {
       heading: 'About',
       body: [
         'At work I cover every layer of a web application: PostgreSQL data modeling, Node.js APIs, React interfaces, automated tests, and CI/CD.',
-        'At UFPR I do digital health research with Prof. Alessandro Brawerman. There I work with R and spatial statistics on Lyfia, and with Kotlin and native C/C++ code on RecuperAVC.',
+        'At UFPR I do digital health research: R and spatial statistics on Lyfia, Kotlin and native C/C++ code on RecuperAVC.',
         'Languages: Portuguese (native), English (C1), and German (B1).',
       ],
       stackHeading: 'What I work with',
@@ -162,7 +162,7 @@ export const work: Record<Lang, { jobs: Job[]; education: Job[] }> = {
         role: 'Tecnólogo em Análise e Desenvolvimento de Sistemas',
         org: 'Universidade Federal do Paraná',
         period: 'out. 2022 – dez. 2026 (previsão)',
-        lead: 'Pesquisa em saúde digital com o Prof. Alessandro Brawerman, que resultou no Lyfia e no RecuperAVC.',
+        lead: 'Pesquisa em saúde digital, que resultou no Lyfia e no RecuperAVC.',
         items: [
           'Projetos de disciplina com Docker Compose, como microsserviços em Spring Boot com gateway em Node.js.',
         ],
@@ -193,7 +193,7 @@ export const work: Record<Lang, { jobs: Job[]; education: Job[] }> = {
         role: 'Technologist Degree in Systems Analysis and Development',
         org: 'Federal University of Paraná (UFPR)',
         period: 'Oct 2022 – Dec 2026 (expected)',
-        lead: 'Digital health research with Prof. Alessandro Brawerman, which led to Lyfia and RecuperAVC.',
+        lead: 'Digital health research that led to Lyfia and RecuperAVC.',
         items: [
           'Course projects with Docker Compose, such as Spring Boot microservices behind a Node.js gateway.',
         ],

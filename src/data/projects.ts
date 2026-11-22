@@ -67,7 +67,7 @@ export const projects: Record<Lang, Project[]> = {
       ],
       meta: [
         { label: 'Ano', value: '2026' },
-        { label: 'Tipo', value: 'Pesquisa na UFPR, orientada pelo Prof. Alessandro Brawerman' },
+        { label: 'Tipo', value: 'Pesquisa na UFPR' },
         { label: 'Meu papel', value: 'Pipeline de dados, análise e painel' },
         { label: 'Stack', value: 'R, targets, renv, SQLite, React 19, TypeScript, Canvas 2D, Playwright' },
         { label: 'Código', value: 'Repositório privado' },
@@ -191,7 +191,7 @@ export const projects: Record<Lang, Project[]> = {
       ],
       meta: [
         { label: 'Year', value: '2026' },
-        { label: 'Type', value: 'Research at UFPR, advised by Prof. Alessandro Brawerman' },
+        { label: 'Type', value: 'Research at UFPR' },
         { label: 'My role', value: 'Data pipeline, analysis, and dashboard' },
         { label: 'Stack', value: 'R, targets, renv, SQLite, React 19, TypeScript, Canvas 2D, Playwright' },
         { label: 'Code', value: 'Private repository' },

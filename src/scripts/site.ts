@@ -248,7 +248,7 @@ function projectsWall() {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           gsap.set('[data-track-progress]', { scaleX: self.progress });
-          skew(gsap.utils.clamp(-3, 3, self.getVelocity() / -900));
+          skew(gsap.utils.clamp(-1.5, 1.5, self.getVelocity() / -1400));
         },
         onScrubComplete: () => skew(0),
       },
@@ -276,17 +276,10 @@ function projectsWall() {
     if (intro) {
       const img = $('[data-intro-img]', intro);
       if (img) gsap.fromTo(img, { xPercent: 0, scale: 1.04 }, { xPercent: 38, scale: 1.18, ease: 'none', scrollTrigger: along(intro, 'left left', 'right left') });
-      const chars = $$('.intro-title .split-char', intro);
-      if (chars.length) {
-        gsap.to(chars, {
-          yPercent: -108,
-          ease: 'power1.in',
-          stagger: { each: 0.06, from: 'start' },
-          scrollTrigger: along(intro, 'right 82%', 'right 18%'),
-        });
-      }
+      const title = $('.intro-title', intro);
+      if (title) gsap.fromTo(title, { x: 0 }, { x: () => window.innerWidth * 0.45, ease: 'none', scrollTrigger: along(intro, 'left left', 'right left') });
       const foot = $('[data-intro-foot]', intro);
-      if (foot) gsap.to(foot, { xPercent: -14, opacity: 0, ease: 'power1.in', scrollTrigger: along(intro, 'right 70%', 'right 10%') });
+      if (foot) gsap.fromTo(foot, { x: 0, opacity: 1 }, { x: () => window.innerWidth * 0.2, opacity: 0, ease: 'power1.in', scrollTrigger: along(intro, 'left left', 'left -55%') });
     }
 
     $$('[data-panel]', track).forEach((panel) => {
@@ -298,29 +291,29 @@ function projectsWall() {
 
       gsap.fromTo(
         [title, ghost].filter(Boolean),
-        { x: () => window.innerWidth * 0.22 },
-        { x: () => -window.innerWidth * 0.06, ease: 'none', scrollTrigger: along(panel, 'left right', 'right left') },
+        { x: () => window.innerWidth * 0.16 },
+        { x: () => -window.innerWidth * 0.16, ease: 'none', scrollTrigger: along(panel, 'left right', 'right left') },
       );
       if (plate) {
         gsap.fromTo(
           plate,
           { clipPath: 'inset(0% 50% 0% 50%)' },
-          { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power2.out', scrollTrigger: along(panel, 'left 92%', 'left 22%') },
+          { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power2.out', scrollTrigger: along(panel, 'left 95%', 'left 35%') },
         );
       }
       if (shots.length) {
         gsap.fromTo(
           shots,
           { yPercent: (i) => 34 + i * 10, rotation: (i) => (i % 2 ? 1.5 : -1.5) },
-          { yPercent: 0, rotation: 0, ease: 'power3.out', stagger: 0.12, scrollTrigger: along(panel, 'left 75%', 'left 5%') },
+          { yPercent: 0, rotation: 0, ease: 'power3.out', stagger: 0.12, scrollTrigger: along(panel, 'left 80%', 'left 15%') },
         );
       }
       if (body) {
         const rows = [...body.children].flatMap((c) => (c.matches('.facts') ? [...c.children] : [c]));
         gsap.fromTo(
           rows,
-          { opacity: 0, x: 60 },
-          { opacity: 1, x: 0, ease: 'power2.out', stagger: 0.08, scrollTrigger: along(panel, 'left 60%', 'left 8%') },
+          { opacity: 0, x: 48 },
+          { opacity: 1, x: 0, ease: 'power2.out', stagger: 0.05, scrollTrigger: along(panel, 'left 85%', 'left 40%') },
         );
       }
     });

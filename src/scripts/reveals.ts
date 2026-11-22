@@ -90,19 +90,6 @@ function decode(el: HTMLElement, duration = 1.1) {
   });
 }
 
-function spotlight(el: Element, trigger: Element = el) {
-  const words = SplitText.create(el, { type: 'words' }).words;
-  gsap.fromTo(
-    words,
-    { opacity: 0.16 },
-    {
-      opacity: 1,
-      ease: 'none',
-      stagger: 0.1,
-      scrollTrigger: { trigger, start: 'top 82%', end: 'bottom 52%', scrub: 0.4 },
-    },
-  );
-}
 
 function work() {
   const section = one('.work');
@@ -133,7 +120,17 @@ function work() {
     const role = one('.job-role', job);
     if (role) tl.from(chars(role), { yPercent: 105, duration: 0.9, ease: 'expo.out', stagger: 0.012 }, 0.35);
     tl.from(all('.job-org, .job-lead', job), { opacity: 0, duration: 0.8, ease: 'power2.out', stagger: 0.1 }, 0.6);
-    all('.job-items li', job).forEach((li) => spotlight(li));
+    const items = all('.job-items li', job);
+    if (items.length) {
+      gsap.from(items, {
+        opacity: 0,
+        y: 18,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.05,
+        scrollTrigger: once(items[0], 'top 94%'),
+      });
+    }
   });
 }
 
@@ -170,7 +167,15 @@ function about() {
     }
   }
   const text = one('.about-text', section);
-  if (text) spotlight(text);
+  if (text) {
+    gsap.from(all('p', text).flatMap((p) => lines(p)), {
+      yPercent: 100,
+      duration: 0.8,
+      ease: 'expo.out',
+      stagger: 0.04,
+      scrollTrigger: once(text, 'top 92%'),
+    });
+  }
   const title2 = one('.stack-title', section);
   if (title2) ScrollTrigger.create({ ...once(title2, 'top 90%'), onEnter: () => decode(title2, 0.8) });
   all('.stack-row', section).forEach((row, i) => {
@@ -205,10 +210,10 @@ function contact() {
   if (lead) {
     gsap.from(SplitText.create(lead, { type: 'words' }).words, {
       opacity: 0,
-      filter: 'blur(10px)',
-      duration: 1,
+      filter: 'blur(8px)',
+      duration: 0.6,
       ease: 'power2.out',
-      stagger: 0.035,
+      stagger: 0.015,
       scrollTrigger: once(lead, 'top 92%'),
     });
   }
@@ -240,10 +245,10 @@ function caseSections() {
   all('.case-section').forEach((s) => {
     const h = one('.case-h2', s);
     const tl = gsap.timeline({ scrollTrigger: once(s) });
-    tl.from(s, { ...wipeIn(s), duration: 1.2, ease: 'expo.inOut' });
+    tl.from(s, { ...wipeIn(s), duration: 0.9, ease: 'expo.inOut' });
     if (h) tl.from(chars(h), { yPercent: (i) => (i % 2 ? -115 : 115), duration: 1.1, ease: 'expo.out', stagger: 0.025 }, 0.3);
-    all('.case-prose p, .case-pubs li', s).forEach((p, i) => {
-      tl.from(lines(p), { yPercent: 105, duration: 1, ease: 'expo.out', stagger: 0.06 }, 0.45 + i * 0.12);
+    all('.case-prose p, .case-pubs li', s).forEach((p) => {
+      gsap.from(lines(p), { yPercent: 105, duration: 0.8, ease: 'expo.out', stagger: 0.04, scrollTrigger: once(p, 'top 94%') });
     });
   });
   const meta = all('.case-meta > div');

@@ -68,10 +68,10 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
               ))}
             </div>
           )}
-          {p.qr && <QrCode url={p.qr.url} label={p.qr.label} class="plate-qr" />}
         </div>
 
         <div class="project-body" data-project-body>
+          {p.qr && <QrCode url={p.qr.url} label={p.qr.label} class="body-qr" />}
           <p class="label project-kind">{p.kind}</p>
           <p class="lead project-lead">{p.lead}</p>
           <ul class="facts">
@@ -284,24 +284,17 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
     aspect-ratio: 720 / 1530;
     border: 4px solid var(--ink);
   }
-  .project-plate :global(.plate-qr) {
-    position: absolute;
-    top: clamp(1rem, 2.4cqw, 2rem);
-    right: clamp(1rem, 2.4cqw, 2rem);
-    z-index: 3;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-    color: var(--ink);
+  .project-body :global(.body-qr) {
+    gap: 1rem;
+    margin-bottom: 0.5rem;
   }
-  .project-plate :global(.plate-qr .qr-code) {
-    width: 5.5rem;
-    padding: 0.45rem;
+  .project-body :global(.body-qr .qr-code) {
+    width: 5rem;
+    padding: 0.4rem;
   }
-  .project-plate :global(.plate-qr .qr-label) {
-    max-width: 14ch;
-    text-align: right;
-    font-weight: 500;
+  .project-body :global(.body-qr .qr-label) {
+    max-width: 22ch;
+    color: var(--paper);
   }
 
   .track-progress {
@@ -364,18 +357,25 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
       align-items: center;
     }
     .stage-lyfia {
-      --gap: clamp(0.75rem, 3cqw, 2.25rem);
-      --dh: min(100cqh, (100cqw - var(--gap)) / 2.06);
-      gap: var(--gap);
+      --ph: min(82cqh, 60cqw / 0.462 * 0.5);
+      --pw: calc(var(--ph) * 0.462);
+      --dw: min(100cqw - var(--pw) * 0.55, 132cqh);
+      gap: 0;
+      align-items: stretch;
     }
     .screen-desktop {
       flex: none;
-      height: var(--dh);
-      width: calc(var(--dh) * 1.6);
+      align-self: flex-start;
+      width: var(--dw);
+      height: calc(var(--dw) / 1.6);
     }
     .screen-phone {
-      height: var(--dh);
-      width: calc(var(--dh) * 0.462);
+      position: relative;
+      z-index: 1;
+      align-self: flex-end;
+      width: var(--pw);
+      height: var(--ph);
+      margin-left: calc(var(--pw) * -0.45);
       border-width: 5px;
     }
     .stage-phones {
@@ -417,7 +417,7 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
       padding: 0.3rem 0;
       font-size: 0.9rem;
     }
-    .project-plate :global(.plate-qr) {
+    .project-body :global(.body-qr) {
       display: none;
     }
   }
@@ -434,9 +434,6 @@ const titleWidth = (name: string) => (name.length <= 6 ? 125 : 62);
       height: 100svh;
       min-height: 0;
       width: 100vw;
-    }
-    :global(html.motion) .panel-intro {
-      width: 76vw;
     }
     :global(html.motion) .intro-foot .lead {
       grid-column: 1 / span 5;
