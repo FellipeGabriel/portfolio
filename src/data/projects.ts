@@ -65,7 +65,7 @@ export const projects: Record<Lang, Project[]> = {
       facts: [
         'Pipeline reprodutível em R, com dados do DATASUS e do IBGE e rotas do OpenRouteService',
         'Painel em React 19 e TypeScript, com o mapa desenhado em Canvas 2D',
-        "Artigo completo aceito no ICITS'27",
+        'Resumo expandido aprovado no CONBRASP 2026',
       ],
       links: lyfiaLinks.pt,
       cover: { src: lyfiaPainel, alt: 'Tela do painel Lyfia: mapa do Brasil com as regiões de saúde coloridas pelo número de máquinas ao alcance, ao lado de um gráfico da série 2017 a 2024.' },
@@ -110,63 +110,6 @@ export const projects: Record<Lang, Project[]> = {
             'O painel é em React 19 e TypeScript. Comecei com o MapLibre e troquei por um renderizador próprio em Canvas 2D: o JavaScript inicial caiu de 369 KB para 95 KB (gzip) e o zoom roda a 60 fps sem GPU.',
             'As tabelas são virtualizadas com TanStack e o estado fica na URL com Zustand, então dá para mandar o link de uma visão específica. Os testes e2e com Playwright e axe checam acessibilidade, inclusive com simulação de daltonismo.',
             'O recálculo do índice no navegador bate com o do R, com erro máximo de 10⁻⁷. O site está no Cloudflare Pages, com CSP e conferência de SHA-256 dos arquivos.',
-          ],
-        },
-      ],
-    },
-    {
-      slug: 'bintriage',
-      name: 'bintriage',
-      field: 'paper',
-      kind: 'Ferramenta em C++, projeto pessoal, 2026',
-      lead: 'Lê um executável do Windows ou do Linux sem rodá-lo e mostra o que ele importa, que proteções de segurança tem, onde ficam as funções e quem chama quem.',
-      facts: [
-        'C++20 com LIEF e Capstone, para binários PE e ELF x86_64',
-        'Sem metadados, a descoberta de funções tem F1 de 0,80, medido em 39 binários reais',
-        'Testado com ASan, UBSan e 269 entradas corrompidas de propósito',
-      ],
-      links: btLinks.pt,
-      cover: { src: btReport, alt: 'Saída do bintriage no terminal para o /bin/ls: formato, ponto de entrada, proteções de segurança, seções com entropia e as primeiras funções encontradas.' },
-      secondary: [
-        { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, partindo do ponto de entrada até as funções importadas da libc.' },
-      ],
-      meta: [
-        { label: 'Ano', value: '2026' },
-        { label: 'Tipo', value: 'Projeto pessoal' },
-        { label: 'Formatos', value: 'PE e ELF, x86_64' },
-        { label: 'Stack', value: 'C++20, CMake, vcpkg, LIEF, Capstone, Python' },
-        { label: 'Código', value: 'github.com/FellipeGabriel/bintriage' },
-      ],
-      sections: [
-        {
-          heading: 'O problema',
-          body: [
-            'Diante de um executável desconhecido, a primeira pergunta é o que ele faz e se vale gastar horas com ele num disassembler. O bintriage responde isso em menos de um segundo na maioria dos binários, direto no terminal.',
-            'Ele trata o arquivo como dado não confiável: confere cabeçalhos e limites antes de cada leitura e nunca carrega, mapeia ou executa o binário.',
-          ],
-        },
-        {
-          heading: 'Como acha as funções',
-          body: [
-            'Cada função vira um grafo de blocos básicos: a análise segue os desvios condicionais, resolve as tabelas de salto dos switch e separa chamadas finais (tail calls) de saltos dentro da própria função.',
-            'Quando o binário traz metadados, eles viram pontos de partida: a tabela de exceções .pdata no Windows, o .eh_frame e as tabelas de símbolos no Linux, além de exports e callbacks TLS. O que sobra é coberto por uma busca de prólogos de função, confirmada decodificando as primeiras instruções.',
-          ],
-          shot: { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, com funções internas, chamadas resolvidas e funções da libc.', caption: 'O grafo de chamadas parte do ponto de entrada; endereços são funções do próprio binário e nomes seguidos de uma biblioteca entre colchetes são funções importadas.' },
-        },
-        {
-          heading: 'O que mais ele mostra',
-          body: [
-            'As proteções de segurança do binário, no estilo do checksec: PIE, NX, RELRO, canário de pilha e FORTIFY no Linux; ASLR, DEP, CFG, /GS e assinatura Authenticode no Windows.',
-            'A entropia de cada seção e alertas de anomalia, como seção gravável e executável ao mesmo tempo, que costuma indicar código empacotado. E pistas do que o programa pode fazer a partir dos imports, como rede, criptografia e injeção em outros processos, apresentadas como pistas e não como veredito.',
-            'O relatório sai no terminal, em JSON e em DOT, para desenhar o grafo no Graphviz.',
-          ],
-          shot: { src: btReport, alt: 'Relatório do bintriage para o /bin/ls com proteções de segurança, seções e entropia.', caption: 'O começo do relatório: formato, proteções de segurança e entropia por seção.' },
-        },
-        {
-          heading: 'Como sei que funciona',
-          body: [
-            'Medi a descoberta de funções em 39 binários reais, de ferramentas do Linux a DLLs do System32, com 30.216 funções de referência tiradas das tabelas de símbolos, do .eh_frame e do .pdata. Sem usar nenhum metadado, o F1 é de 0,80; com os metadados, nos binários em que a conta é independente, chega a 0,98. O script que refaz essa conta está no repositório.',
-            'Os testes rodam com AddressSanitizer e UndefinedBehaviorSanitizer e incluem 269 entradas malformadas ou corrompidas de propósito; nenhuma derruba nem trava a análise. A análise completa do notepad.exe leva cerca de 60 ms, e a da ntdll.dll, com mais de 7 mil funções, menos de meio segundo.',
           ],
         },
       ],
@@ -235,6 +178,63 @@ export const projects: Record<Lang, Project[]> = {
         },
       ],
     },
+    {
+      slug: 'bintriage',
+      name: 'bintriage',
+      field: 'paper',
+      kind: 'Ferramenta em C++, projeto pessoal, 2026',
+      lead: 'Lê um executável do Windows ou do Linux sem rodá-lo e mostra o que ele importa, que proteções de segurança tem, onde ficam as funções e quem chama quem.',
+      facts: [
+        'C++20 com LIEF e Capstone, para binários PE e ELF x86_64',
+        'Sem metadados, a descoberta de funções tem F1 de 0,80, medido em 39 binários reais',
+        'Testado com ASan, UBSan e 269 entradas corrompidas de propósito',
+      ],
+      links: btLinks.pt,
+      cover: { src: btReport, alt: 'Saída do bintriage no terminal para o /bin/ls: formato, ponto de entrada, proteções de segurança, seções com entropia e as primeiras funções encontradas.' },
+      secondary: [
+        { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, partindo do ponto de entrada até as funções importadas da libc.' },
+      ],
+      meta: [
+        { label: 'Ano', value: '2026' },
+        { label: 'Tipo', value: 'Projeto pessoal' },
+        { label: 'Formatos', value: 'PE e ELF, x86_64' },
+        { label: 'Stack', value: 'C++20, CMake, vcpkg, LIEF, Capstone, Python' },
+        { label: 'Código', value: 'github.com/FellipeGabriel/bintriage' },
+      ],
+      sections: [
+        {
+          heading: 'O problema',
+          body: [
+            'Diante de um executável desconhecido, a primeira pergunta é o que ele faz e se vale gastar horas com ele num disassembler. O bintriage responde isso em menos de um segundo na maioria dos binários, direto no terminal.',
+            'Ele trata o arquivo como dado não confiável: confere cabeçalhos e limites antes de cada leitura e nunca carrega, mapeia ou executa o binário.',
+          ],
+        },
+        {
+          heading: 'Como acha as funções',
+          body: [
+            'Cada função vira um grafo de blocos básicos: a análise segue os desvios condicionais, resolve as tabelas de salto dos switch e separa chamadas finais (tail calls) de saltos dentro da própria função.',
+            'Quando o binário traz metadados, eles viram pontos de partida: a tabela de exceções .pdata no Windows, o .eh_frame e as tabelas de símbolos no Linux, além de exports e callbacks TLS. O que sobra é coberto por uma busca de prólogos de função, confirmada decodificando as primeiras instruções.',
+          ],
+          shot: { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, com funções internas, chamadas resolvidas e funções da libc.', caption: 'O grafo de chamadas parte do ponto de entrada; endereços são funções do próprio binário e nomes seguidos de uma biblioteca entre colchetes são funções importadas.' },
+        },
+        {
+          heading: 'O que mais ele mostra',
+          body: [
+            'As proteções de segurança do binário, no estilo do checksec: PIE, NX, RELRO, canário de pilha e FORTIFY no Linux; ASLR, DEP, CFG, /GS e assinatura Authenticode no Windows.',
+            'A entropia de cada seção e alertas de anomalia, como seção gravável e executável ao mesmo tempo, que costuma indicar código empacotado. E pistas do que o programa pode fazer a partir dos imports, como rede, criptografia e injeção em outros processos, apresentadas como pistas e não como veredito.',
+            'O relatório sai no terminal, em JSON e em DOT, para desenhar o grafo no Graphviz.',
+          ],
+          shot: { src: btReport, alt: 'Relatório do bintriage para o /bin/ls com proteções de segurança, seções e entropia.', caption: 'O começo do relatório: formato, proteções de segurança e entropia por seção.' },
+        },
+        {
+          heading: 'Como sei que funciona',
+          body: [
+            'Medi a descoberta de funções em 39 binários reais, de ferramentas do Linux a DLLs do System32, com 30.216 funções de referência tiradas das tabelas de símbolos, do .eh_frame e do .pdata. Sem usar nenhum metadado, o F1 é de 0,80; com os metadados, nos binários em que a conta é independente, chega a 0,98. O script que refaz essa conta está no repositório.',
+            'Os testes rodam com AddressSanitizer e UndefinedBehaviorSanitizer e incluem 269 entradas malformadas ou corrompidas de propósito; nenhuma derruba nem trava a análise. A análise completa do notepad.exe leva cerca de 60 ms, e a da ntdll.dll, com mais de 7 mil funções, menos de meio segundo.',
+          ],
+        },
+      ],
+    },
   ],
   en: [
     {
@@ -246,7 +246,7 @@ export const projects: Record<Lang, Project[]> = {
       facts: [
         'Reproducible R pipeline using public health data (DATASUS), census data (IBGE), and OpenRouteService routes',
         'Dashboard in React 19 and TypeScript, with the map drawn in Canvas 2D',
-        "Full paper accepted at ICITS'27",
+        'Extended abstract accepted at CONBRASP 2026',
       ],
       links: lyfiaLinks.en,
       cover: { src: lyfiaPainel, alt: 'The Lyfia dashboard: a map of Brazil with health regions shaded by the number of machines within reach, next to a 2017 to 2024 trend chart.' },
@@ -291,63 +291,6 @@ export const projects: Record<Lang, Project[]> = {
             'The dashboard is React 19 and TypeScript. I started with MapLibre and replaced it with my own Canvas 2D renderer: initial JavaScript dropped from 369 KB to 95 KB (gzip), and zooming runs at 60 fps without a GPU.',
             'Tables are virtualized with TanStack, and state lives in the URL through Zustand, so you can share a link to a specific view. End-to-end tests with Playwright and axe check accessibility, including color blindness simulation.',
             "The in-browser recalculation of the index matches R's output within 10⁻⁷. The site runs on Cloudflare Pages with a CSP and SHA-256 checks on the published files.",
-          ],
-        },
-      ],
-    },
-    {
-      slug: 'bintriage',
-      name: 'bintriage',
-      field: 'paper',
-      kind: 'C++ tool, personal project, 2026',
-      lead: 'Reads a Windows or Linux executable without running it and shows what it imports, which security hardening it has, where its functions are, and what calls what.',
-      facts: [
-        'C++20 with LIEF and Capstone, for x86_64 PE and ELF binaries',
-        'Without metadata, function discovery reaches 0.80 F1, measured on 39 real binaries',
-        'Tested under ASan, UBSan, and 269 deliberately corrupted inputs',
-      ],
-      links: btLinks.en,
-      cover: { src: btReport, alt: 'bintriage terminal output for /bin/ls: format, entry point, binary hardening, sections with entropy, and the first functions found.' },
-      secondary: [
-        { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, from the entry point down to functions imported from libc.' },
-      ],
-      meta: [
-        { label: 'Year', value: '2026' },
-        { label: 'Type', value: 'Personal project' },
-        { label: 'Formats', value: 'PE and ELF, x86_64' },
-        { label: 'Stack', value: 'C++20, CMake, vcpkg, LIEF, Capstone, Python' },
-        { label: 'Code', value: 'github.com/FellipeGabriel/bintriage' },
-      ],
-      sections: [
-        {
-          heading: 'The problem',
-          body: [
-            'Faced with an unknown executable, the first question is what it does and whether it deserves hours in a disassembler. bintriage answers that in under a second for most binaries, right in the terminal.',
-            'It treats the file as untrusted data: headers and bounds are checked before every read, and the binary is never loaded, mapped, or executed.',
-          ],
-        },
-        {
-          heading: 'Finding functions',
-          body: [
-            'Each function becomes a graph of basic blocks: the analysis follows conditional branches, resolves switch jump tables, and tells tail calls apart from jumps inside the same function.',
-            'When the binary carries metadata, it becomes a starting point: the .pdata exception table on Windows, .eh_frame and the symbol tables on Linux, plus exports and TLS callbacks. Whatever is left is covered by a scan for function prologues, confirmed by decoding the first instructions.',
-          ],
-          shot: { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, with internal functions, resolved calls, and libc functions.', caption: 'The call graph starts at the entry point; addresses are functions inside the binary and names followed by a bracketed library are imported functions.' },
-        },
-        {
-          heading: 'What else it reports',
-          body: [
-            'Binary hardening checks in the style of checksec: PIE, NX, RELRO, stack canaries, and FORTIFY on Linux; ASLR, DEP, CFG, /GS, and Authenticode signatures on Windows.',
-            'Per-section entropy and anomaly flags, such as sections that are both writable and executable, a common sign of packed code. And hints about what the program can do based on its imports, such as networking, cryptography, and injecting into other processes, presented as hints rather than verdicts.',
-            'The report comes out in the terminal, as JSON, and as DOT for drawing the graph with Graphviz.',
-          ],
-          shot: { src: btReport, alt: 'bintriage report for /bin/ls with binary hardening, sections, and entropy.', caption: 'The top of the report: format, binary hardening, and per-section entropy.' },
-        },
-        {
-          heading: 'How I know it works',
-          body: [
-            'I measured function discovery on 39 real binaries, from Linux tools to System32 DLLs, against 30,216 reference functions taken from symbol tables, .eh_frame, and .pdata. With all metadata turned off, F1 is 0.80; with metadata, on the binaries where the score is independent, it reaches 0.98. The script that reruns the numbers is in the repository.',
-            'The tests run under AddressSanitizer and UndefinedBehaviorSanitizer and include 269 malformed or deliberately corrupted inputs; none of them crashes or hangs the analysis. A full analysis of notepad.exe takes about 60 ms, and ntdll.dll, with more than 7,000 functions, takes under half a second.',
           ],
         },
       ],
@@ -412,6 +355,63 @@ export const projects: Record<Lang, Project[]> = {
           heading: 'On Google Play',
           body: [
             'I published the app on Google Play and handle the Play Console, releases, and store requirements such as targeting API 36.',
+          ],
+        },
+      ],
+    },
+    {
+      slug: 'bintriage',
+      name: 'bintriage',
+      field: 'paper',
+      kind: 'C++ tool, personal project, 2026',
+      lead: 'Reads a Windows or Linux executable without running it and shows what it imports, which security hardening it has, where its functions are, and what calls what.',
+      facts: [
+        'C++20 with LIEF and Capstone, for x86_64 PE and ELF binaries',
+        'Without metadata, function discovery reaches 0.80 F1, measured on 39 real binaries',
+        'Tested under ASan, UBSan, and 269 deliberately corrupted inputs',
+      ],
+      links: btLinks.en,
+      cover: { src: btReport, alt: 'bintriage terminal output for /bin/ls: format, entry point, binary hardening, sections with entropy, and the first functions found.' },
+      secondary: [
+        { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, from the entry point down to functions imported from libc.' },
+      ],
+      meta: [
+        { label: 'Year', value: '2026' },
+        { label: 'Type', value: 'Personal project' },
+        { label: 'Formats', value: 'PE and ELF, x86_64' },
+        { label: 'Stack', value: 'C++20, CMake, vcpkg, LIEF, Capstone, Python' },
+        { label: 'Code', value: 'github.com/FellipeGabriel/bintriage' },
+      ],
+      sections: [
+        {
+          heading: 'The problem',
+          body: [
+            'Faced with an unknown executable, the first question is what it does and whether it deserves hours in a disassembler. bintriage answers that in under a second for most binaries, right in the terminal.',
+            'It treats the file as untrusted data: headers and bounds are checked before every read, and the binary is never loaded, mapped, or executed.',
+          ],
+        },
+        {
+          heading: 'Finding functions',
+          body: [
+            'Each function becomes a graph of basic blocks: the analysis follows conditional branches, resolves switch jump tables, and tells tail calls apart from jumps inside the same function.',
+            'When the binary carries metadata, it becomes a starting point: the .pdata exception table on Windows, .eh_frame and the symbol tables on Linux, plus exports and TLS callbacks. Whatever is left is covered by a scan for function prologues, confirmed by decoding the first instructions.',
+          ],
+          shot: { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, with internal functions, resolved calls, and libc functions.', caption: 'The call graph starts at the entry point; addresses are functions inside the binary and names followed by a bracketed library are imported functions.' },
+        },
+        {
+          heading: 'What else it reports',
+          body: [
+            'Binary hardening checks in the style of checksec: PIE, NX, RELRO, stack canaries, and FORTIFY on Linux; ASLR, DEP, CFG, /GS, and Authenticode signatures on Windows.',
+            'Per-section entropy and anomaly flags, such as sections that are both writable and executable, a common sign of packed code. And hints about what the program can do based on its imports, such as networking, cryptography, and injecting into other processes, presented as hints rather than verdicts.',
+            'The report comes out in the terminal, as JSON, and as DOT for drawing the graph with Graphviz.',
+          ],
+          shot: { src: btReport, alt: 'bintriage report for /bin/ls with binary hardening, sections, and entropy.', caption: 'The top of the report: format, binary hardening, and per-section entropy.' },
+        },
+        {
+          heading: 'How I know it works',
+          body: [
+            'I measured function discovery on 39 real binaries, from Linux tools to System32 DLLs, against 30,216 reference functions taken from symbol tables, .eh_frame, and .pdata. With all metadata turned off, F1 is 0.80; with metadata, on the binaries where the score is independent, it reaches 0.98. The script that reruns the numbers is in the repository.',
+            'The tests run under AddressSanitizer and UndefinedBehaviorSanitizer and include 269 malformed or deliberately corrupted inputs; none of them crashes or hangs the analysis. A full analysis of notepad.exe takes about 60 ms, and ntdll.dll, with more than 7,000 functions, takes under half a second.',
           ],
         },
       ],

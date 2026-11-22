@@ -17,7 +17,7 @@ export const ui = {
     htmlLang: 'pt-BR',
     title: 'Fellipe Gabriel, desenvolvedor full stack',
     description:
-      'Portfólio de Fellipe Gabriel, desenvolvedor full stack. Node.js, React, TypeScript, PostgreSQL e Python. Projetos: Lyfia, bintriage e RecuperAVC.',
+      'Portfólio de Fellipe Gabriel, desenvolvedor full stack. Node.js, React, TypeScript, PostgreSQL e Python. Projetos: Lyfia, RecuperAVC e bintriage.',
     skip: 'Pular para o conteúdo',
     nav: { projects: 'Projetos', work: 'Experiência', about: 'Sobre', contact: 'Contato', menu: 'Menu', close: 'Fechar', home: 'Início' },
     otherLang: { code: 'EN', label: 'Read in English' },
@@ -30,7 +30,7 @@ export const ui = {
     },
     projects: {
       heading: 'Projetos',
-      lead: 'Um painel público sobre o acesso à hemodiálise no SUS, uma ferramenta em C++ que examina executáveis sem rodá-los e um app Android de reabilitação pós-AVC publicado na Google Play.',
+      lead: 'Um painel público sobre o acesso à hemodiálise no SUS, um app Android de reabilitação pós-AVC publicado na Google Play e uma ferramenta em C++ que examina executáveis sem rodá-los.',
       howItWasMade: 'Como foi feito',
     },
     work: {
@@ -74,7 +74,7 @@ export const ui = {
     htmlLang: 'en',
     title: 'Fellipe Gabriel, full stack developer',
     description:
-      'Portfolio of Fellipe Gabriel, full stack developer. Node.js, React, TypeScript, PostgreSQL, and Python. Projects: Lyfia, bintriage, and RecuperAVC.',
+      'Portfolio of Fellipe Gabriel, full stack developer. Node.js, React, TypeScript, PostgreSQL, and Python. Projects: Lyfia, RecuperAVC, and bintriage.',
     skip: 'Skip to content',
     nav: { projects: 'Projects', work: 'Experience', about: 'About', contact: 'Contact', menu: 'Menu', close: 'Close', home: 'Home' },
     otherLang: { code: 'PT', label: 'Ler em português' },
@@ -87,7 +87,7 @@ export const ui = {
     },
     projects: {
       heading: 'Projects',
-      lead: "A public dashboard on access to hemodialysis in Brazil's public health system, a C++ tool that inspects executables without running them, and a post-stroke rehabilitation app on Google Play.",
+      lead: "A public dashboard on access to hemodialysis in Brazil's public health system, a post-stroke rehabilitation app on Google Play, and a C++ tool that inspects executables without running them.",
       howItWasMade: 'How it was built',
     },
     work: {
@@ -164,7 +164,7 @@ export const work: Record<Lang, { jobs: Job[]; education: Job[] }> = {
         period: 'out. 2022 – dez. 2026 (previsão)',
         lead: 'Pesquisa em saúde digital, que resultou no Lyfia e no RecuperAVC.',
         items: [
-          'No MioDottore, sistema hospitalar com microsserviços em Spring Boot e gateway em Node.js, fiz parte do back-end, a integração dos containers no Docker Compose e o envio de e-mail.',
+          'Num sistema hospitalar com microsserviços em Spring Boot e gateway em Node.js, fiz parte do back-end, a integração dos containers no Docker Compose e o envio de e-mail.',
           'Em DevOps, montei no GitHub Actions o pipeline de um app Expo: testes em matriz de versões do Node, deploy da versão web no GitHub Pages, APK publicado como release e imagem Docker multiarquitetura no Docker Hub.',
           'Desenvolvi com colegas um sistema de gestão de frotas em Angular 19, com back-end em Spring Boot e Spring Security.',
           'Modelei um data warehouse de varejo em PostgreSQL, com esquema estrela de cinco dimensões, staging e ETL escrito em SQL.',
@@ -199,7 +199,7 @@ export const work: Record<Lang, { jobs: Job[]; education: Job[] }> = {
         period: 'Oct 2022 – Dec 2026 (expected)',
         lead: 'Digital health research that led to Lyfia and RecuperAVC.',
         items: [
-          'On MioDottore, a hospital management system built as Spring Boot microservices behind a Node.js gateway, I worked on the backend, wired the containers together with Docker Compose, and built the email delivery.',
+          'On a hospital management system built as Spring Boot microservices behind a Node.js gateway, I worked on the backend, wired the containers together with Docker Compose, and built the email delivery.',
           'For a DevOps course, I built the GitHub Actions pipeline for an Expo app: tests across a Node version matrix, the web build deployed to GitHub Pages, the APK published as a release, and a multi-architecture Docker image pushed to Docker Hub.',
           'Built a fleet management system with classmates in Angular 19, with a Spring Boot and Spring Security backend.',
           'Designed a retail data warehouse in PostgreSQL with a five-dimension star schema, a staging layer, and ETL written in SQL.',
@@ -222,13 +222,6 @@ export type Publication = {
 export const publications: Record<Lang, Publication[]> = {
   pt: [
     {
-      year: '2027',
-      venue: "ICITS'27, 10th International Conference on Information Technology & Systems",
-      status: 'Artigo completo aceito',
-      title: 'Mapping Potential Access to Public Hemodialysis in Brazil, 2017 to 2024',
-      project: 'lyfia',
-    },
-    {
       year: '2026',
       venue: 'XXI Congresso Brasileiro de Informática em Saúde (CBIS)',
       status: 'Artigo original, apresentado',
@@ -246,13 +239,6 @@ export const publications: Record<Lang, Publication[]> = {
     },
   ],
   en: [
-    {
-      year: '2027',
-      venue: "ICITS'27, 10th International Conference on Information Technology & Systems",
-      status: 'Full paper, accepted',
-      title: 'Mapping Potential Access to Public Hemodialysis in Brazil, 2017 to 2024',
-      project: 'lyfia',
-    },
     {
       year: '2026',
       venue: '21st Brazilian Congress of Health Informatics (CBIS)',

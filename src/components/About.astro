@@ -12,7 +12,7 @@ const t = ui[lang].about;
   <h2 id="about-title" class="display about-title" data-fit="0.62" data-split>{t.heading}</h2>
   <div class="about-grid">
     <figure class="about-photo plate">
-      <Picture quality={88} src={photo} formats={['avif', 'webp']} widths={[240, 480, 720]} sizes="(max-width: 899px) 34vw, 22vw" alt={t.photoAlt} loading="lazy" />
+      <Picture quality={88} src={photo} formats={['avif', 'webp']} widths={[160, 320, 480]} sizes="(max-width: 899px) 24vw, 10rem" alt={t.photoAlt} loading="lazy" />
     </figure>
     <div class="about-text prose">
       {t.body.map((p) => <p>{p}</p>)}
@@ -48,8 +48,10 @@ const t = ui[lang].about;
     padding-top: 1.5rem;
   }
   .about-photo {
-    grid-column: 1 / span 3;
-    aspect-ratio: 4 / 5;
+    grid-column: 1 / span 2;
+    width: 100%;
+    max-width: 10rem;
+    aspect-ratio: 1;
     filter: grayscale(1) contrast(1.08);
     align-self: start;
   }
@@ -57,10 +59,10 @@ const t = ui[lang].about;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 35%;
+    object-position: 50% 40%;
   }
   .about-text {
-    grid-column: 4 / span 4;
+    grid-column: 3 / span 5;
     font-size: var(--step-1);
     line-height: 1.42;
   }
@@ -82,10 +84,10 @@ const t = ui[lang].about;
   }
   @media (max-width: 899px) {
     .about-photo {
-      grid-column: 1 / span 4;
+      grid-column: 1 / span 3;
     }
     .about-text {
-      grid-column: 5 / -1;
+      grid-column: 4 / -1;
       font-size: var(--step-0);
     }
     .about-stack {

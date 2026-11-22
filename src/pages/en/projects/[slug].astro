@@ -2,7 +2,7 @@
 import CaseStudy from '../../../components/CaseStudy.astro';
 import type { Slug } from '../../../data/projects';
 export function getStaticPaths() {
-  return [{ params: { slug: 'lyfia' } }, { params: { slug: 'bintriage' } }, { params: { slug: 'recuperavc' } }];
+  return [{ params: { slug: 'lyfia' } }, { params: { slug: 'recuperavc' } }, { params: { slug: 'bintriage' } }];
 }
 const { slug } = Astro.params as { slug: Slug };
 ---
