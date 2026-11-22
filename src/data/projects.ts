@@ -122,7 +122,7 @@ export const projects: Record<Lang, Project[]> = {
       lead: 'Lê um executável do Windows ou do Linux sem rodá-lo e mostra o que ele importa, que proteções de segurança tem, onde ficam as funções e quem chama quem.',
       facts: [
         'C++20 com LIEF e Capstone, para binários PE e ELF x86_64',
-        'Sem metadados, a descoberta de funções tem F1 de 0,80 em 39 binários reais; a primeira versão tinha 0,06',
+        'Sem metadados, a descoberta de funções tem F1 de 0,80, medido em 39 binários reais',
         'Testado com ASan, UBSan e 269 entradas corrompidas de propósito',
       ],
       links: btLinks.pt,
@@ -148,7 +148,7 @@ export const projects: Record<Lang, Project[]> = {
         {
           heading: 'Como acha as funções',
           body: [
-            'A primeira versão seguia as chamadas a partir do ponto de entrada e parava no primeiro ret de cada função, então encontrava menos de 3% das funções. Hoje cada função vira um grafo de blocos básicos: a análise segue os desvios condicionais, resolve as tabelas de salto dos switch e separa chamadas finais (tail calls) de saltos dentro da própria função.',
+            'Cada função vira um grafo de blocos básicos: a análise segue os desvios condicionais, resolve as tabelas de salto dos switch e separa chamadas finais (tail calls) de saltos dentro da própria função.',
             'Quando o binário traz metadados, eles viram pontos de partida: a tabela de exceções .pdata no Windows, o .eh_frame e as tabelas de símbolos no Linux, além de exports e callbacks TLS. O que sobra é coberto por uma busca de prólogos de função, confirmada decodificando as primeiras instruções.',
           ],
           shot: { src: btGraph, alt: 'Grafo de chamadas do /bin/ls no terminal, com funções internas, chamadas resolvidas e funções da libc.', caption: 'O grafo de chamadas parte do ponto de entrada; endereços são funções do próprio binário e nomes seguidos de uma biblioteca entre colchetes são funções importadas.' },
@@ -165,8 +165,8 @@ export const projects: Record<Lang, Project[]> = {
         {
           heading: 'Como sei que funciona',
           body: [
-            'Medi a descoberta de funções em 39 binários reais, de ferramentas do Linux a DLLs do System32, com 30.210 funções de referência tiradas das tabelas de símbolos, do .eh_frame e do .pdata. Sem usar nenhum metadado, o F1 subiu de 0,06 na primeira versão para 0,80. O script que refaz essa conta está no repositório.',
-            'Os testes rodam com AddressSanitizer e UndefinedBehaviorSanitizer e incluem 269 entradas malformadas ou corrompidas de propósito; nenhum derruba nem trava a análise. O notepad.exe é analisado em cerca de 55 ms, contra 1,3 s da primeira versão.',
+            'Medi a descoberta de funções em 39 binários reais, de ferramentas do Linux a DLLs do System32, com 30.216 funções de referência tiradas das tabelas de símbolos, do .eh_frame e do .pdata. Sem usar nenhum metadado, o F1 é de 0,80; com os metadados, nos binários em que a conta é independente, chega a 0,98. O script que refaz essa conta está no repositório.',
+            'Os testes rodam com AddressSanitizer e UndefinedBehaviorSanitizer e incluem 269 entradas malformadas ou corrompidas de propósito; nenhuma derruba nem trava a análise. A análise completa do notepad.exe leva cerca de 60 ms, e a da ntdll.dll, com mais de 7 mil funções, menos de meio segundo.',
           ],
         },
       ],
@@ -303,7 +303,7 @@ export const projects: Record<Lang, Project[]> = {
       lead: 'Reads a Windows or Linux executable without running it and shows what it imports, which security hardening it has, where its functions are, and what calls what.',
       facts: [
         'C++20 with LIEF and Capstone, for x86_64 PE and ELF binaries',
-        'Without metadata, function discovery reaches 0.80 F1 across 39 real binaries, up from 0.06 in the first version',
+        'Without metadata, function discovery reaches 0.80 F1, measured on 39 real binaries',
         'Tested under ASan, UBSan, and 269 deliberately corrupted inputs',
       ],
       links: btLinks.en,
@@ -329,7 +329,7 @@ export const projects: Record<Lang, Project[]> = {
         {
           heading: 'Finding functions',
           body: [
-            'The first version followed calls from the entry point and stopped at the first ret in each function, so it found fewer than 3% of the functions. Now each function becomes a graph of basic blocks: the analysis follows conditional branches, resolves switch jump tables, and tells tail calls apart from jumps inside the same function.',
+            'Each function becomes a graph of basic blocks: the analysis follows conditional branches, resolves switch jump tables, and tells tail calls apart from jumps inside the same function.',
             'When the binary carries metadata, it becomes a starting point: the .pdata exception table on Windows, .eh_frame and the symbol tables on Linux, plus exports and TLS callbacks. Whatever is left is covered by a scan for function prologues, confirmed by decoding the first instructions.',
           ],
           shot: { src: btGraph, alt: 'Call graph of /bin/ls in the terminal, with internal functions, resolved calls, and libc functions.', caption: 'The call graph starts at the entry point; addresses are functions inside the binary and names followed by a bracketed library are imported functions.' },
@@ -346,8 +346,8 @@ export const projects: Record<Lang, Project[]> = {
         {
           heading: 'How I know it works',
           body: [
-            'I measured function discovery on 39 real binaries, from Linux tools to System32 DLLs, against 30,210 reference functions taken from symbol tables, .eh_frame, and .pdata. With all metadata turned off, F1 went from 0.06 in the first version to 0.80. The script that reruns the numbers is in the repository.',
-            'The tests run under AddressSanitizer and UndefinedBehaviorSanitizer and include 269 malformed or deliberately corrupted inputs; none of them crashes or hangs the analysis. notepad.exe takes about 55 ms to analyze, down from 1.3 s in the first version.',
+            'I measured function discovery on 39 real binaries, from Linux tools to System32 DLLs, against 30,216 reference functions taken from symbol tables, .eh_frame, and .pdata. With all metadata turned off, F1 is 0.80; with metadata, on the binaries where the score is independent, it reaches 0.98. The script that reruns the numbers is in the repository.',
+            'The tests run under AddressSanitizer and UndefinedBehaviorSanitizer and include 269 malformed or deliberately corrupted inputs; none of them crashes or hangs the analysis. A full analysis of notepad.exe takes about 60 ms, and ntdll.dll, with more than 7,000 functions, takes under half a second.',
           ],
         },
       ],
