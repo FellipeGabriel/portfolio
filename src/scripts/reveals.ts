@@ -60,8 +60,8 @@ function publications() {
     const content = Array.from(pub.children).filter((c) => c !== bar);
     const year = one('.pub-year', pub);
     const target = year ? parseInt(year.textContent ?? '0', 10) : 0;
+    gsap.set(content, { opacity: 0 });
     const tl = gsap.timeline({ scrollTrigger: once(pub) });
-    tl.set(content, { opacity: 0 });
     tl.to(bar, { scaleX: 1, duration: 0.55, ease: 'expo.in' });
     tl.set(content, { opacity: 1 });
     tl.to(bar, { scaleX: 0, transformOrigin: '100% 50%', duration: 0.7, ease: 'expo.out' });
@@ -151,20 +151,11 @@ function about() {
   }
   const photo = one('.about-photo', section);
   if (photo) {
-    const img = one('img', photo);
     gsap.fromTo(photo, { clipPath: 'inset(0% 0% 100% 0%)' }, {
       clipPath: 'inset(0% 0% 0% 0%)',
       ease: 'none',
       scrollTrigger: { trigger: photo, start: 'top 92%', end: 'top 45%', scrub: 0.5 },
     });
-    if (img) {
-      gsap.fromTo(img, { scale: 1.35, yPercent: -6 }, {
-        scale: 1,
-        yPercent: 6,
-        ease: 'none',
-        scrollTrigger: { trigger: photo, start: 'top bottom', end: 'bottom top', scrub: true },
-      });
-    }
   }
   const text = one('.about-text', section);
   if (text) {

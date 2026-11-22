@@ -55,18 +55,15 @@ const pageDescription = description ?? t.description;
           motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         } catch (e) {}
         if (motion) d.classList.add('motion');
-        var first = false;
-        try {
-          first = !sessionStorage.getItem('fg-loaded');
-        } catch (e) {}
-        if (motion && first) {
-          d.classList.add('is-loading');
-          setTimeout(function () { d.classList.remove('is-loading'); }, 7000);
-        }
         var pt = null;
         try {
           pt = JSON.parse(sessionStorage.getItem('fg-pt') || 'null');
         } catch (e) {}
+        var first = !(pt && pt.name);
+        if (motion && first) {
+          d.classList.add('is-loading');
+          setTimeout(function () { d.classList.remove('is-loading'); }, 7000);
+        }
         if (motion && pt && pt.name && !first) {
           d.classList.add('is-transitioning');
           d.dataset.ptField = pt.field === 'ink' || pt.field === 'paper' ? pt.field : 'petrol';

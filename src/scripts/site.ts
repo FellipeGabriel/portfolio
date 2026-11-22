@@ -253,13 +253,13 @@ function projectsWall() {
         onScrubComplete: () => skew(0),
       },
     });
-    const along = (trigger: Element, start: string, end: string) => ({
+    const along = (trigger: Element, start: string, end: string, responsive = false) => ({
       trigger,
       containerAnimation: wall,
       start,
       end,
       scrub: true,
-      invalidateOnRefresh: true,
+      invalidateOnRefresh: responsive,
     });
 
     $$('[data-field]', track).forEach((panel) => {
@@ -277,9 +277,9 @@ function projectsWall() {
       const img = $('[data-intro-img]', intro);
       if (img) gsap.fromTo(img, { xPercent: 0, scale: 1.04 }, { xPercent: 38, scale: 1.18, ease: 'none', scrollTrigger: along(intro, 'left left', 'right left') });
       const title = $('.intro-title', intro);
-      if (title) gsap.fromTo(title, { x: 0 }, { x: () => window.innerWidth * 0.45, ease: 'none', scrollTrigger: along(intro, 'left left', 'right left') });
+      if (title) gsap.fromTo(title, { x: 0 }, { x: () => window.innerWidth * 0.45, ease: 'none', scrollTrigger: along(intro, 'left left', 'right left', true) });
       const foot = $('[data-intro-foot]', intro);
-      if (foot) gsap.fromTo(foot, { x: 0, opacity: 1 }, { x: () => window.innerWidth * 0.2, opacity: 0, ease: 'power1.in', scrollTrigger: along(intro, 'left left', 'left -55%') });
+      if (foot) gsap.fromTo(foot, { x: 0, opacity: 1 }, { x: () => window.innerWidth * 0.2, opacity: 0, ease: 'power1.in', scrollTrigger: along(intro, 'left left', 'left -55%', true) });
     }
 
     $$('[data-panel]', track).forEach((panel) => {
@@ -292,7 +292,7 @@ function projectsWall() {
       gsap.fromTo(
         [title, ghost].filter(Boolean),
         { x: () => window.innerWidth * 0.16 },
-        { x: () => -window.innerWidth * 0.16, ease: 'none', scrollTrigger: along(panel, 'left right', 'right left') },
+        { x: () => -window.innerWidth * 0.16, ease: 'none', scrollTrigger: along(panel, 'left right', 'right left', true) },
       );
       if (plate) {
         gsap.fromTo(

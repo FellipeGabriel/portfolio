@@ -42,10 +42,6 @@ export function runLoader(): Promise<void> {
       const exit = gsap.timeline({
         onComplete: () => {
           root.classList.remove('is-loading');
-          try {
-            sessionStorage.setItem('fg-loaded', '1');
-          } catch {
-          }
           el.remove();
         },
       });
